@@ -19,6 +19,8 @@ public strictfp class RobotPlayer {
 
     static int turnCount;
     static int numMiners = 0;
+    static MapLocation HqLocation;
+    static int countDesignSchool = 0;
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
      * If this method returns, the robot dies!
@@ -75,6 +77,14 @@ public strictfp class RobotPlayer {
 
     static void runMiner() throws GameActionException {
         tryBlockchain();
+        if (HqLocation == null) {
+            RobotInfo[] robots = rc.senseNearbyRobots();
+            for (RobotInfo robot : robots) {
+                if(robot.type == RobotType.HQ && robot.team == rc.getTeam()) {
+                    HqLocation = robot.location;
+                }
+            }
+        }
         // tryBuild(randomSpawnedByMiner(), randomDirection());
         for (Direction dir : directions)
             if (tryMine(dir))
@@ -82,11 +92,21 @@ public strictfp class RobotPlayer {
         for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
+        if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
+            Direction toHQ = rc.getLocation().directionTo(HqLocation);
+            if(tryMove(toHQ))
+                System.out.println("move to HQ");
+        }
+        for (Direction dir : directions)
+            if(tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                countDesignSchool++;
+                System.out.println("Design school created");
+            }
         tryMove(randomDirection());
         if (tryMove(randomDirection()))
             System.out.println("I moved!");
-        for (Direction dir : directions)
-            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
+        //for (Direction dir : directions)
+            //tryBuild(RobotType.FULFILLMENT_CENTER, dir);
     }
 
     static void runRefinery() throws GameActionException {

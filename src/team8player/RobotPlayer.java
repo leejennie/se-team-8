@@ -21,6 +21,7 @@ public strictfp class RobotPlayer {
     static int numMiners = 0;
     static MapLocation HqLocation;
     static int countDesignSchool = 0;
+    static int countRefinery = 0;
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
      * If this method returns, the robot dies!
@@ -65,6 +66,8 @@ public strictfp class RobotPlayer {
     }
 
     static void runHQ() throws GameActionException {
+        //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
+        // thought it was helpful to winning the game because having more miners can produce more "robots"
         if(numMiners < 15) {
             for (Direction dir : directions) {
                 if (tryBuild(RobotType.MINER, dir)) {
@@ -77,6 +80,9 @@ public strictfp class RobotPlayer {
 
     static void runMiner() throws GameActionException {
         tryBlockchain();
+
+        //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y because it looks like it will be helpful in the future
+        //to have the HQ location available in case we ever need to go back to HQ
         if (HqLocation == null) {
             RobotInfo[] robots = rc.senseNearbyRobots();
             for (RobotInfo robot : robots) {
@@ -92,21 +98,21 @@ public strictfp class RobotPlayer {
         for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-        if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
-            Direction toHQ = rc.getLocation().directionTo(HqLocation);
-            if(tryMove(toHQ))
-                System.out.println("move to HQ");
-        }
         for (Direction dir : directions)
             if(tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                 countDesignSchool++;
                 System.out.println("Design school created");
             }
+        if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
+            Direction toHQ = rc.getLocation().directionTo(HqLocation);
+            if(tryMove(toHQ))
+                System.out.println("move to HQ");
+        }
         tryMove(randomDirection());
         if (tryMove(randomDirection()))
             System.out.println("I moved!");
-        //for (Direction dir : directions)
-            //tryBuild(RobotType.FULFILLMENT_CENTER, dir);
+        for (Direction dir : directions)
+            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
     }
 
     static void runRefinery() throws GameActionException {

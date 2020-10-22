@@ -43,10 +43,9 @@ public strictfp class RobotPlayer {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You can add the missing ones or rewrite this into your own control structure.
                 System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
-<<<<<<< HEAD
-=======
+
                 findHQ();
->>>>>>> 0f4c67737e11cc90b2acba4b096f998ff73c49a1
+
                 switch (rc.getType()) {
                     case HQ:                 runHQ();                break;
                     case MINER:              runMiner();             break;
@@ -69,8 +68,6 @@ public strictfp class RobotPlayer {
         }
     }
 
-<<<<<<< HEAD
-=======
     /*  Taken from https://www.youtube.com/watch?v=YJjs7Eo6IrU&ab_channel=MITBattlecode
      *  to make it so all robots will check the HQ location
      */
@@ -85,7 +82,6 @@ public strictfp class RobotPlayer {
         }
     }
 
->>>>>>> 0f4c67737e11cc90b2acba4b096f998ff73c49a1
     static void runHQ() throws GameActionException {
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
         // thought it was helpful to winning the game because having more miners can produce more "robots"
@@ -104,24 +100,7 @@ public strictfp class RobotPlayer {
 
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y because it looks like it will be helpful in the future
         //to have the HQ location available in case we ever need to go back to HQ
-<<<<<<< HEAD
-        if (HqLocation == null) {
-=======
-        /* if (HqLocation == null) {
->>>>>>> 0f4c67737e11cc90b2acba4b096f998ff73c49a1
-            RobotInfo[] robots = rc.senseNearbyRobots();
-            for (RobotInfo robot : robots) {
-                if(robot.type == RobotType.HQ && robot.team == rc.getTeam()) {
-                    HqLocation = robot.location;
-                }
-            }
-<<<<<<< HEAD
-        }
-=======
-        } */
-        // Moved to findHQ function by Patrick 10/21
 
->>>>>>> 0f4c67737e11cc90b2acba4b096f998ff73c49a1
         // tryBuild(randomSpawnedByMiner(), randomDirection());
         for (Direction dir : directions)
             if (tryMine(dir))
@@ -132,6 +111,10 @@ public strictfp class RobotPlayer {
         for (Direction dir : directions)
             if(tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                 countDesignSchool++;
+                System.out.println("Design school created");
+            }
+        for (Direction dir : directions)
+            if(tryBuild(RobotType.LANDSCAPER, dir)) {
                 System.out.println("Design school created");
             }
         if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
@@ -164,8 +147,7 @@ public strictfp class RobotPlayer {
     }
 
     static void runLandscaper() throws GameActionException {
-<<<<<<< HEAD
-=======
+
         int currDirt = rc.getDirtCarrying();
         if (currDirt == 0) {
             Direction dir = randomDirection();
@@ -173,15 +155,16 @@ public strictfp class RobotPlayer {
                 System.out.println("I dug in the " + dir + " direction.");
                 return;
             }
-        } else {
-            if (currDirt == 25) {
+        }
+        else if (currDirt == 25) {
                 Direction dir = randomDirection();
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
                     return;
                 }
             }
-        } else {
+
+        else {
             for (Direction dir : directions)
                 if (tryDig(dir)) {
                     System.out.println("I dug in the " + dir + " direction.");
@@ -195,7 +178,6 @@ public strictfp class RobotPlayer {
         }
         // If no other actions can be performed, try to move
         tryMove();
->>>>>>> 0f4c67737e11cc90b2acba4b096f998ff73c49a1
 
     }
 
@@ -270,15 +252,13 @@ public strictfp class RobotPlayer {
     }
 
     /**
-<<<<<<< HEAD
-=======
      * Attempts to dig in a given direction
      *
      * @param dir The intended direction to dig
      * @return true if it dug
      * @throws GameActionException
      */
-    static boolen tryDig(Direction dir) {
+    static boolean tryDig(Direction dir) throws GameActionException {
         if (rc.canDigDirt(dir)) {
             rc.digDirt(dir);
             return true;
@@ -293,16 +273,16 @@ public strictfp class RobotPlayer {
      * @return true if deposited
      * @throws GameActionException
      */
-    static boolean tryDepositDirt(Direction dir) {
+    static boolean tryDepositDirt(Direction dir) throws GameActionException {
         if(rc.canDepositDirt(dir)) {
-            rc.depositDirt(dir)
+            rc.depositDirt(dir);
             return true;
         }
         return false;
     }
 
     /**
->>>>>>> 0f4c67737e11cc90b2acba4b096f998ff73c49a1
+
      * Attempts to build a given robot in a given direction.
      *
      * @param type The type of the robot to build

@@ -43,6 +43,7 @@ public strictfp class RobotPlayer {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You can add the missing ones or rewrite this into your own control structure.
                 System.out.println("I'm a " + rc.getType() + "! Location " + rc.getLocation());
+                findHQ();
                 switch (rc.getType()) {
                     case HQ:                 runHQ();                break;
                     case MINER:              runMiner();             break;
@@ -65,6 +66,20 @@ public strictfp class RobotPlayer {
         }
     }
 
+    /*  Taken from https://www.youtube.com/watch?v=YJjs7Eo6IrU&ab_channel=MITBattlecode
+     *  to make it so all robots will check the HQ location
+     */
+    static void findHQ() throws GameActionException {
+        if (HqLocation == null) {
+            RobotInfo[] robots = rc.senseNearbyRobots();
+            for (RobotInfo robot : robots) {
+                if(robot.type == RobotType.HQ && robot.team == rc.getTeam()) {
+                    HqLocation = robot.location;
+                }
+            }
+        }
+    }
+
     static void runHQ() throws GameActionException {
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
         // thought it was helpful to winning the game because having more miners can produce more "robots"
@@ -83,14 +98,16 @@ public strictfp class RobotPlayer {
 
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y because it looks like it will be helpful in the future
         //to have the HQ location available in case we ever need to go back to HQ
-        if (HqLocation == null) {
+        /* if (HqLocation == null) {
             RobotInfo[] robots = rc.senseNearbyRobots();
             for (RobotInfo robot : robots) {
                 if(robot.type == RobotType.HQ && robot.team == rc.getTeam()) {
                     HqLocation = robot.location;
                 }
             }
-        }
+        } */
+        // Moved to findHQ function by Patrick 10/21
+
         // tryBuild(randomSpawnedByMiner(), randomDirection());
         for (Direction dir : directions)
             if (tryMine(dir))
@@ -133,6 +150,35 @@ public strictfp class RobotPlayer {
     }
 
     static void runLandscaper() throws GameActionException {
+        int currDirt = rc.getDirtCarrying();
+        if (currDirt == 0) {
+            Direction dir = randomDirection();
+            if (tryDig(dir)) {
+                System.out.println("I dug in the " + dir + " direction.");
+                return;
+            }
+        } else {
+            if (currDirt == 25) {
+                Direction dir = randomDirection();
+                if (tryDepositDirt(dir)) {
+                    System.out.println("I deposited dirt in the " + dir + " direction.");
+                    return;
+                }
+            }
+        } else {
+            for (Direction dir : directions)
+                if (tryDig(dir)) {
+                    System.out.println("I dug in the " + dir + " direction.");
+                    return;
+                }
+            for (Direction dir : directions)
+                if (tryDepositDirt(dir)){
+                    System.out.println("I deposited dirt in the " + dir + " direction.");
+                    return;
+                }
+        }
+        // If no other actions can be performed, try to move
+        tryMove();
 
     }
 
@@ -204,6 +250,36 @@ public strictfp class RobotPlayer {
             rc.move(dir);
             return true;
         } else return false;
+    }
+
+    /**
+     * Attempts to dig in a given direction
+     *
+     * @param dir The intended direction to dig
+     * @return true if it dug
+     * @throws GameActionException
+     */
+    static boolen tryDig(Direction dir) {
+        if (rc.canDigDirt(dir)) {
+            rc.digDirt(dir);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Attempts to deposit dirt in a given direction
+     * 
+     * @param dir The intended direction to deposit
+     * @return true if deposited
+     * @throws GameActionException
+     */
+    static boolean tryDepositDirt(Direction dir) {
+        if(rc.canDepositDirt(dir)) {
+            rc.depositDirt(dir)
+            return true;
+        }
+        return false;
     }
 
     /**

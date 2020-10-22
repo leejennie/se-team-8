@@ -112,7 +112,7 @@ public strictfp class RobotPlayer {
             }
         for (Direction dir : directions)
             if(tryBuild(RobotType.LANDSCAPER, dir)) {
-                System.out.println("Design school created");
+                System.out.println("Landscaper created");
             }
         if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
             Direction toHQ = rc.getLocation().directionTo(HqLocation);

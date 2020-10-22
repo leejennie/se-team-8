@@ -98,9 +98,6 @@ public strictfp class RobotPlayer {
     static void runMiner() throws GameActionException {
         tryBlockchain();
 
-        //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y because it looks like it will be helpful in the future
-        //to have the HQ location available in case we ever need to go back to HQ
-
         // tryBuild(randomSpawnedByMiner(), randomDirection());
         for (Direction dir : directions)
             if (tryMine(dir))

@@ -139,8 +139,10 @@ public strictfp class RobotPlayer {
     }
 
     static void runFulfillmentCenter() throws GameActionException {
-        for (Direction dir : directions)
+        for (Direction dir : directions) {
+            if(turnCount>500)
             tryBuild(RobotType.DELIVERY_DRONE, dir);
+        }
     }
 
     static void runLandscaper() throws GameActionException {

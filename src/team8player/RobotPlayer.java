@@ -85,7 +85,7 @@ public strictfp class RobotPlayer {
     static void runHQ() throws GameActionException {
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
         // thought it was helpful to winning the game because having more miners can produce more "robots"
-        if(numMiners < 15) {
+        if(numMiners < 15 && turnCount<400) {
             for (Direction dir : directions) {
                 if (tryBuild(RobotType.MINER, dir)) {
                     numMiners++;

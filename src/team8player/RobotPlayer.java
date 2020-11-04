@@ -103,6 +103,11 @@ public strictfp class RobotPlayer {
             if (tryMine(dir))
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
         for (Direction dir : directions)
+            if(tryBuild(RobotType.REFINERY, dir)) {
+                countRefinery++;
+                System.out.println("Refinery created");
+            }
+        for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
         for (Direction dir : directions)

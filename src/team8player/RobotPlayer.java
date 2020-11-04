@@ -1,9 +1,7 @@
 package team8player;
 import battlecode.common.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 import static battlecode.common.GameConstants.BLOCKCHAIN_TRANSACTION_LENGTH;
 
@@ -360,11 +358,11 @@ public strictfp class RobotPlayer {
         }
     }
     // Message senders
-    public static void sendRobotLoc(MapLocation loc, int robot_type, int hostile) throws GameActionException {
+    public static void sendRobotLoc(MapLocation loc, int robotType, int hostile) throws GameActionException {
         int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
         message[0] = teamCode;
-        message[1] = ROBOT_LOCATION.id;
-        message[2] = robot_type;
+        message[1] = message_type.ROBOT_LOCATION.id;
+        message[2] = robotType;
         message[3] = hostile; // 0 for ally, 1 for enemy robot
         message[4] = loc.x;
         message[5] = loc.y;
@@ -375,7 +373,7 @@ public strictfp class RobotPlayer {
     public static void sendSoupLoc(MapLocation loc, int robot_type) throws GameActionException {
         int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
         message[0] = teamCode;
-        message[1] = SOUP_LOCATION.id;
+        message[1] = message_type.SOUP_LOCATION.id;
         message[2] = loc.x;
         message[3] = loc.y;
         if(rc.canSubmitTransaction(message, 10))
@@ -397,26 +395,26 @@ public strictfp class RobotPlayer {
 
     // Sabotage methods
     public static int getEnemyBCIdentifier() throws GameActionException {
+        // Build a hashmap of all the ints from the blockchain
+        HashMap<Integer, Integer> collisionCounter = new HashMap<Integer, Integer>();
         for(int i = 0; i < rc.getRoundNum(); i++) {
-            HashMap<Integer, Integer> collisionCounter = null;
             for(Transaction t : rc.getBlock(i)) {
                 int[] message = t.getMessage();
-                for(int j = 0; j < BLOCKCHAIN_TRANSACTION_LENGTH; j++) {
-                    if (message[j] != team_code) {
-                        if (collisionCounter.containsKey(message[j]))
-                            collisionCounter.put(message[j], 1 + collisionCounter.getOrDefault(message[j], 0));
-                    }
+                for(int j: message) {
+                    Integer count = collisionCounter.get(j);
+                    collisionCounter.put(j, count != null ? count+1 : 1);
                 }
-            // Get max value to find key, which is likely the enemy's message identifier
-            Entry<Integer, Integer> maxEntry = Collections.max(map.entrySet(), (Entry<Integer, Integer> e1,
-                                                                                Entry <Integer,Integer> e2)
-                                                                                -> e1.getValue()
-                                                                                .compareTo(e2.getValue()));
-            return maxEntry.getValue();
-
             }
         }
-        return -1;
+        // Get max value to find key, which is likely the enemy's message identifier
+        return Collections.max(collisionCounter.entrySet(),
+                    new Comparator<Map.Entry<Integer, Integer>>() {
+                        @Override
+                        public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
+                            return o1.getValue().compareTo(o2.getValue());
+                        }
+                    }
+            ).getKey();
     }
 
     public static void sendJunkMessages(int enemyId) throws GameActionException{

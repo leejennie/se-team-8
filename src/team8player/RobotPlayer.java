@@ -85,7 +85,7 @@ public strictfp class RobotPlayer {
     static void runHQ() throws GameActionException {
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
         // thought it was helpful to winning the game because having more miners can produce more "robots"
-        if(numMiners < 15) {
+        if(numMiners < 15 && turnCount<400) {
             for (Direction dir : directions) {
                 if (tryBuild(RobotType.MINER, dir)) {
                     numMiners++;
@@ -110,10 +110,12 @@ public strictfp class RobotPlayer {
         for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-        for (Direction dir : directions)
-            if(tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                countDesignSchool++;
-                System.out.println("Design school created");
+            if (turnCount<200) {
+                for (Direction dir : directions)
+                    if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                        countDesignSchool++;
+                        System.out.println("Design school created");
+                    }
             }
         for (Direction dir : directions)
             if(tryBuild(RobotType.LANDSCAPER, dir)) {
@@ -145,7 +147,6 @@ public strictfp class RobotPlayer {
 
     static void runFulfillmentCenter() throws GameActionException {
         for (Direction dir : directions) {
-            if(turnCount>500)
             tryBuild(RobotType.DELIVERY_DRONE, dir);
         }
     }

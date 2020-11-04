@@ -1,6 +1,12 @@
 package team8player;
 import battlecode.common.*;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Random;
+
+import static battlecode.common.GameConstants.BLOCKCHAIN_TRANSACTION_LENGTH;
+
 public strictfp class RobotPlayer {
     static RobotController rc;
 
@@ -310,6 +316,7 @@ public strictfp class RobotPlayer {
 
     /**
      * Attempts to refine soup in a given direction.
+     * /
      *
      * @param dir The intended direction of refining
      * @return true if a move was performed
@@ -320,6 +327,107 @@ public strictfp class RobotPlayer {
             rc.depositSoup(dir, rc.getSoupCarrying());
             return true;
         } else return false;
+    }
+
+
+    /*
+     *
+     * BLOCKCHAIN STUFF
+     */
+    static final int teamCode = 2662718; // Randomly generated number for id
+    public enum message_type {
+        ROBOT_LOCATION(0),
+        SOUP_LOCATION(1),
+        ETC(2);
+        private int id;
+        private message_type(int id) {
+            this.id = id;
+        }
+    }
+    public enum robot_type { // added mainly to make code more readable
+        _MINER(0),
+        _LANDSCAPER(1),
+        _DELIVERY_DRONE(2),
+        _HQ(3),
+        _REFINERY(4),
+        _VAPORATOR(5),
+        _DESIGN_SCHOOL(6),
+        _FULLFILLMENT_CENTER(7),
+        _NET_GUN(8);
+        private int id;
+        private robot_type(int id) {
+            this.id = id;
+        }
+    }
+    // Message senders
+    public static void sendRobotLoc(MapLocation loc, int robot_type, int hostile) throws GameActionException {
+        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        message[0] = teamCode;
+        message[1] = ROBOT_LOCATION.id;
+        message[2] = robot_type;
+        message[3] = hostile; // 0 for ally, 1 for enemy robot
+        message[4] = loc.x;
+        message[5] = loc.y;
+        if(rc.canSubmitTransaction(message, 10))
+            rc.submitTransaction(message, 10);
+    }
+
+    public static void sendSoupLoc(MapLocation loc, int robot_type) throws GameActionException {
+        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        message[0] = teamCode;
+        message[1] = SOUP_LOCATION.id;
+        message[2] = loc.x;
+        message[3] = loc.y;
+        if(rc.canSubmitTransaction(message, 10))
+            rc.submitTransaction(message, 10);
+    }
+
+    // Takes an int for message type and retrieves the most recent message with that type
+    public static int[] getMessageFromBlockchain(int msgType) throws  GameActionException {
+        for(int i = 0; i < rc.getRoundNum(); i++) {
+            for(Transaction t : rc.getBlock(i)) {
+                int[] message = t.getMessage();
+                if(message[0] == teamCode && message[1] == msgType)
+                    return message;
+            }
+        }
+        return null;
+    }
+
+
+    // Sabotage methods
+    public static int getEnemyBCIdentifier() throws GameActionException {
+        for(int i = 0; i < rc.getRoundNum(); i++) {
+            HashMap<Integer, Integer> collisionCounter = null;
+            for(Transaction t : rc.getBlock(i)) {
+                int[] message = t.getMessage();
+                for(int j = 0; j < BLOCKCHAIN_TRANSACTION_LENGTH; j++) {
+                    if (message[j] != team_code) {
+                        if (collisionCounter.containsKey(message[j]))
+                            collisionCounter.put(message[j], 1 + collisionCounter.getOrDefault(message[j], 0));
+                    }
+                }
+            // Get max value to find key, which is likely the enemy's message identifier
+            Entry<Integer, Integer> maxEntry = Collections.max(map.entrySet(), (Entry<Integer, Integer> e1,
+                                                                                Entry <Integer,Integer> e2)
+                                                                                -> e1.getValue()
+                                                                                .compareTo(e2.getValue()));
+            return maxEntry.getValue();
+
+            }
+        }
+        return -1;
+    }
+
+    public static void sendJunkMessages(int enemyId) throws GameActionException{
+        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        message[0] = enemyId;
+        for(int i = 1; i < BLOCKCHAIN_TRANSACTION_LENGTH; i++) {
+            Random rand = new Random();
+            message[i] = rand.nextInt(9999999);
+        }
+        if(rc.canSubmitTransaction(message, 10))
+            rc.submitTransaction(message, 10);
     }
 
 

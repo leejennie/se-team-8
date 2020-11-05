@@ -105,12 +105,17 @@ public strictfp class RobotPlayer {
         for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-            if (turnCount<200) {
+            if (turnCount<50) {
                 for (Direction dir : directions)
                     if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                         countDesignSchool++;
                         System.out.println("Design school created");
                     }
+            }
+        for (Direction dir : directions)
+            if(tryBuild(RobotType.REFINERY, dir)) {
+                countRefinery++;
+                System.out.println("Refinery created");
             }
         for (Direction dir : directions)
             if(tryBuild(RobotType.LANDSCAPER, dir)) {
@@ -124,8 +129,9 @@ public strictfp class RobotPlayer {
         tryMove(randomDirection());
         if (tryMove(randomDirection()))
             System.out.println("I moved!");
-        for (Direction dir : directions)
+        for (Direction dir : directions) {
             tryBuild(RobotType.FULFILLMENT_CENTER, dir);
+        }
     }
 
     static void runRefinery() throws GameActionException {

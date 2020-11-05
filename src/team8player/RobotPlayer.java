@@ -33,7 +33,6 @@ public strictfp class RobotPlayer {
     // Locations for enemy buildings
     static MapLocation enemyHqLocation;
     /*
-     *
      * BLOCKCHAIN STUFF
      */
     static final int teamCode = 2662718; // Randomly generated number for id

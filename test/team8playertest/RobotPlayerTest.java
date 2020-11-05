@@ -76,16 +76,4 @@ public class RobotPlayerTest {
     }
 }
 
-/*
-    public void testTryMine() throws GameActionException {
-        RobotController rc1 = Mockito.mock(RobotController.class);
-        RobotPlayer rp1 = Mockito.mock(RobotPlayer.class);
-        if (rc1.getType() == RobotType.MINER) {
-            doAnswer((i) -> {
-                return true;
-            }).when(rp1).tryMine(Direction.CENTER);
-            rp1.tryMine(Direction.CENTER);
-            verify(rp1, times(1)).tryMine(Direction.CENTER);
-        }
-    } */
 

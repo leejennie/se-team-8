@@ -27,8 +27,7 @@ public strictfp class RobotPlayer {
     static MapLocation HqLocation;
     static int countDesignSchool = 0;
     static int countRefinery = 0;
-<<<<<<< HEAD
-=======
+
     static LinkedList<MapLocation> goalLocs = new LinkedList<MapLocation>();
     static LinkedList<MapLocation> usedLocs = new LinkedList<MapLocation>();
     // Locations for enemy buildings
@@ -102,7 +101,6 @@ public strictfp class RobotPlayer {
         }
         return "";
     }
->>>>>>> 617b11778a7eed25599fbc94cf570d992efd66ff
 
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
@@ -208,98 +206,92 @@ public strictfp class RobotPlayer {
     }
 
     static void runMiner() throws GameActionException {
-<<<<<<< HEAD
+
         tryBlockchain();
-        if(countRefinery < 15)
+        if (countRefinery < 15)
             for (Direction dir : directions)
-                if(tryBuild(RobotType.REFINERY, dir)) {
+                if (tryBuild(RobotType.REFINERY, dir)) {
                     countRefinery++;
                 }
-=======
+
         //tryBlockchain();
         // If last action wasn't mining, update goalLocs every n turns
 
-
->>>>>>> 617b11778a7eed25599fbc94cf570d992efd66ff
         // tryBuild(randomSpawnedByMiner(), randomDirection());
         for (Direction dir : directions)
             if (tryMine(dir)) {
                 // Check if this is the first time mining here
-                if(lastAction != 0) {
+                if (lastAction != 0) {
                     MapLocation loc = rc.getLocation();
-                        // Check if we have put this location on the blockchain and send it if not
+                    // Check if we have put this location on the blockchain and send it if not
                     int[] filter = {teamCode, message_type.SOUP_LOCATION.id, loc.x, loc.y, -1, -1, -1};
                     LinkedList<int[]> tmp = getMessagesFromBC(1, filter);
-                    if(!tmp.isEmpty()) {
-                        if(tmp.get(0)[0] != teamCode) {
+                    if (!tmp.isEmpty()) {
+                        if (tmp.get(0)[0] != teamCode) {
                             sendSoupLoc(loc, 10);
                         }
                     }
                 }
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
                 lastAction = 0;
-            }
-            else {
-                if(lastAction == 0) { // Add the location to used up goalLocs
-                    MapLocation loc= rc.getLocation();
+            } else {
+                if (lastAction == 0) { // Add the location to used up goalLocs
+                    MapLocation loc = rc.getLocation();
                     goalLocs.remove(loc);
                     usedLocs.add(loc);
                 }
             }
-        for (Direction dir : directions)
+        for (Direction dir : directions) {
             if (tryRefine(dir)) {
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-<<<<<<< HEAD
-            if (countDesignSchool < 15 && turnCount<200) {
-                if (turnCount < 50) {
-                    for (Direction dir : directions)
-                        if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                            countDesignSchool++;
-                            System.out.println("Design school created");
-                        }
+                if (countDesignSchool < 15 && turnCount < 200) {
+                    if (turnCount < 50) {
+                        for (Direction d : directions)
+                            if (tryBuild(RobotType.DESIGN_SCHOOL, d)) {
+                                countDesignSchool++;
+                                System.out.println("Design school created");
+                            }
+                    }
+                }
+                for (Direction d : directions)
+                    if (tryBuild(RobotType.REFINERY, d)) {
+                        countRefinery++;
+                        System.out.println("Refinery created");
+                        lastAction = 1;
+                    }
+                for (Direction d : directions)
+                    if (tryBuild(RobotType.DESIGN_SCHOOL, d)) {
+                        countDesignSchool++;
+                        System.out.println("Design school created");
+                        lastAction = 2;
+                    }
+                for (Direction d : directions)
+                    if (tryBuild(RobotType.LANDSCAPER, d)) {
+                        System.out.println("Landscaper created");
+                        lastAction = 3;
+                    }
+                if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
+                    Direction toHQ = rc.getLocation().directionTo(HqLocation);
+                    if (tryMove(toHQ)) {
+                        System.out.println("move to HQ");
+                        lastAction = 4;
+                    }
+                }
+                tryMove(randomDirection());
+                if (tryMove(randomDirection())) {
+                    System.out.println("I moved!");
+                    for (Direction d : directions) {
+                        tryBuild(RobotType.FULFILLMENT_CENTER, d);
+
+                        tryMove(randomDirection());
+                        lastAction = 4;
+                    }
+                    for (Direction d : directions) {
+                        tryBuild(RobotType.FULFILLMENT_CENTER, d);
+                        lastAction = 5;
+                    }
                 }
             }
-        for (Direction dir : directions)
-            if(tryBuild(RobotType.REFINERY, dir)) {
-                countRefinery++;
-                System.out.println("Refinery created");
-=======
-                lastAction = 1;
-            }
-        for (Direction dir : directions)
-            if(tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                countDesignSchool++;
-                System.out.println("Design school created");
-                lastAction = 2;
->>>>>>> 617b11778a7eed25599fbc94cf570d992efd66ff
-            }
-        for (Direction dir : directions)
-            if(tryBuild(RobotType.LANDSCAPER, dir)) {
-                System.out.println("Landscaper created");
-                lastAction = 3;
-            }
-        if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
-            Direction toHQ = rc.getLocation().directionTo(HqLocation);
-            if(tryMove(toHQ)) {
-                System.out.println("move to HQ");
-                lastAction = 4;
-            }
-        }
-        tryMove(randomDirection());
-        if (tryMove(randomDirection())) {
-            System.out.println("I moved!");
-<<<<<<< HEAD
-        for (Direction dir : directions) {
-            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
-
-        tryMove(randomDirection());
-=======
-            lastAction = 4;
-        }
-        for (Direction dir : directions) {
-            tryBuild(RobotType.FULFILLMENT_CENTER, dir);
-            lastAction = 5;
->>>>>>> 617b11778a7eed25599fbc94cf570d992efd66ff
         }
     }
 

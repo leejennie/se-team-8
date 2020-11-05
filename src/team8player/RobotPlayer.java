@@ -22,6 +22,7 @@ public strictfp class RobotPlayer {
     static MapLocation HqLocation;
     static int countDesignSchool = 0;
     static int countRefinery = 0;
+
     /**
      * run() is the method that is called when a robot is instantiated in the Battlecode world.
      * If this method returns, the robot dies!
@@ -97,29 +98,24 @@ public strictfp class RobotPlayer {
 
     static void runMiner() throws GameActionException {
         tryBlockchain();
-
+        if(countRefinery < 15)
+            for (Direction dir : directions)
+                if(tryBuild(RobotType.REFINERY, dir)) {
+                    countRefinery++;
+                }
         // tryBuild(randomSpawnedByMiner(), randomDirection());
         for (Direction dir : directions)
             if (tryMine(dir))
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
         for (Direction dir : directions)
-            if(tryBuild(RobotType.REFINERY, dir)) {
-                countRefinery++;
-                System.out.println("Refinery created");
-            }
-        for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-            if (turnCount<200) {
+            if (countDesignSchool < 15 && turnCount<200) {
                 for (Direction dir : directions)
                     if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
                         countDesignSchool++;
                         System.out.println("Design school created");
                     }
-            }
-        for (Direction dir : directions)
-            if(tryBuild(RobotType.LANDSCAPER, dir)) {
-                System.out.println("Landscaper created");
             }
         if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
             Direction toHQ = rc.getLocation().directionTo(HqLocation);
@@ -131,10 +127,11 @@ public strictfp class RobotPlayer {
             System.out.println("I moved!");
         for (Direction dir : directions)
             tryBuild(RobotType.FULFILLMENT_CENTER, dir);
+        tryMove(randomDirection());
     }
 
     static void runRefinery() throws GameActionException {
-        // System.out.println("Pollution: " + rc.sensePollution(rc.getLocation()));
+        //System.out.println("Pollution: " + rc.sensePollution(rc.getLocation()));
     }
 
     static void runVaporator() throws GameActionException {
@@ -142,7 +139,10 @@ public strictfp class RobotPlayer {
     }
 
     static void runDesignSchool() throws GameActionException {
-
+        for (Direction dir : directions)
+            if(tryBuild(RobotType.LANDSCAPER, dir)) {
+                System.out.println("Landscaper created");
+            }
     }
 
     static void runFulfillmentCenter() throws GameActionException {

@@ -110,19 +110,15 @@ public strictfp class RobotPlayer {
         for (Direction dir : directions)
             if (tryRefine(dir))
                 System.out.println("I refined soup! " + rc.getTeamSoup());
-<<<<<<< HEAD
             if (countDesignSchool < 15 && turnCount<200) {
-=======
-            if (turnCount<50) {
->>>>>>> a866d68a7521ed69c780b1e8bbfe1edf5029da25
-                for (Direction dir : directions)
-                    if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                        countDesignSchool++;
-                        System.out.println("Design school created");
-                    }
+                if (turnCount < 50) {
+                    for (Direction dir : directions)
+                        if (tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
+                            countDesignSchool++;
+                            System.out.println("Design school created");
+                        }
+                }
             }
-<<<<<<< HEAD
-=======
         for (Direction dir : directions)
             if(tryBuild(RobotType.REFINERY, dir)) {
                 countRefinery++;
@@ -132,7 +128,6 @@ public strictfp class RobotPlayer {
             if(tryBuild(RobotType.LANDSCAPER, dir)) {
                 System.out.println("Landscaper created");
             }
->>>>>>> a866d68a7521ed69c780b1e8bbfe1edf5029da25
         if (rc.getSoupCarrying() == RobotType.MINER.soupLimit) {
             Direction toHQ = rc.getLocation().directionTo(HqLocation);
             if(tryMove(toHQ))
@@ -143,11 +138,9 @@ public strictfp class RobotPlayer {
             System.out.println("I moved!");
         for (Direction dir : directions) {
             tryBuild(RobotType.FULFILLMENT_CENTER, dir);
-<<<<<<< HEAD
+
         tryMove(randomDirection());
-=======
         }
->>>>>>> a866d68a7521ed69c780b1e8bbfe1edf5029da25
     }
 
     static void runRefinery() throws GameActionException {

@@ -19,6 +19,7 @@ public class Globals {
     public static int countDesignSchool = 0;
     public static int countRefinery = 0;
     public static RobotController rc;
+    public static int txLength = 7; //added because trying to use the provided one was causing issues
 
 
     public static final int teamCode = 2662718; // Randomly generated number for id
@@ -56,5 +57,65 @@ public class Globals {
     public static final int BLD_NETGUN          = 8;
     // cows
     public static final int UNT_COW             = 9;
+
+
+
+    // Helper functions
+    public static int robotToInt(String rType) {
+        switch (rType) {
+            case "MINER":
+                return UNT_MINER;
+            case "LANDSCAPER":
+                return UNT_LANDSCAPER;
+            case "DELIVERYDRONE":
+                return UNT_DDRONE;
+            case "HQ":
+                return BLD_HQ;
+            case "REFINERY":
+                return BLD_REFINERY;
+            case "VAPORATOR":
+                return BLD_VAPORATOR;
+            case "DESIGNSCHOOL":
+                return BLD_DESIGNSCH;
+            case "FILFILLMENTCENTER":
+                return BLD_FLMTCNTR;
+            case "NETGUN":
+                return BLD_NETGUN;
+            case "COW":
+                return UNT_COW;
+        }
+        return -1;
+    }
+
+    public static String intToRobot(int rType) {
+        switch (rType) {
+            case UNT_MINER:
+                return "MINER";
+            case UNT_LANDSCAPER:
+                return "LANDSCAPER";
+            case UNT_DDRONE:
+                return "DELIVERYDRONE";
+            case BLD_HQ:
+                return "HQ";
+            case BLD_REFINERY:
+                return "REFINERY";
+            case BLD_VAPORATOR:
+                return "VAPORATOR";
+            case BLD_DESIGNSCH:
+                return "DESIGNSCHOOL";
+            case BLD_FLMTCNTR:
+                return "FULFILLMENTCENTER";
+            case BLD_NETGUN:
+                return "NETGUN";
+            case UNT_COW:
+                return "COW";
+        }
+        return "idk!?!?";
+    }
+
+    public static String getHostility(int id) {
+        if(id == HOS_ALLY) { return "ally";}
+        return "enemy";
+    }
 
 }

@@ -15,7 +15,6 @@ public abstract class Unit implements PlayerBot {
 
     static int findHQ() throws GameActionException {
         for (RobotInfo robot : rc.senseNearbyRobots()) {
-            // if(robot.type == RobotType.HQ && robot.team == rc.getTeam()) {
             if(robot.type == RobotType.HQ) {
                 if(robot.team == rc.getTeam()) {
                     Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, HOS_ALLY, 10);

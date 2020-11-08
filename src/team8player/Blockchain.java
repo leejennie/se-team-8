@@ -5,12 +5,6 @@ import static team8player.Globals.*;
 
 import java.util.*;
 
-import static battlecode.common.GameConstants.BLOCKCHAIN_TRANSACTION_LENGTH;
-
-
-
-
-
 public class Blockchain {
     static RobotController rc;
 
@@ -34,9 +28,9 @@ public class Blockchain {
         for(int i = 1; i < rc.getRoundNum(); i++) {
             for(Transaction t : rc.getBlock(i)) {
                 int[] message = t.getMessage();
-                for(int j = 0; j < BLOCKCHAIN_TRANSACTION_LENGTH; j++) {
+                for(int j = 0; j < txLength; j++) {
                     if(msgFilter[j] != -1 && msgFilter[j] == message[j]) {
-                        if(j == BLOCKCHAIN_TRANSACTION_LENGTH - 1) {
+                        if(j == txLength - 1) {
                             //System.out.printf("I received a %s message from the Blockchain!%n",
                                     //getMTDescFromId(msgFilter[1]));
                             result.add(message);
@@ -51,7 +45,7 @@ public class Blockchain {
     }
 
     public static void getGoalLocs(int robotType) throws GameActionException {
-        goalLocs = new LinkedList<MapLocation>();
+        goalLocs = new LinkedList<>();
         switch (robotType) {
             // _robot_type._MINER.id is a constant, but can't be used in this switch for some reason???
             // todo: add other robot types
@@ -72,26 +66,33 @@ public class Blockchain {
 
     // Message senders
     public static void sendRobotLoc(MapLocation loc, int robotType, int hostile, int txCost) throws GameActionException {
-        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        int[] message = new int[9];
         message[0] = teamCode;
         message[1] = MSG_ROBOT_LOCATON;
         message[2] = robotType;
         message[3] = hostile; // 0 for ally, 1 for enemy robot
         message[4] = loc.x;
         message[5] = loc.y;
+        message[6] = -1;
+        System.out.printf("I just sent the location of a %s %s at [%d, %d] to the blockchain for %d%n",
+                Globals.getHostility(hostile),
+                Globals.intToRobot(robotType),
+                loc.x,
+                loc.y,
+                txCost);
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
-            //System.out.printf("I just sent the location of a %s %s at [%d, %d] to the blockchain for %d%n",
-              //      getHostilityFromId(hostile),
-              //      getRbtDescFromId(robotType),
-              //      loc.x,
-              //      loc.y,
-              //      txCost);
+            System.out.printf("I just sent the location of a %s %s at [%d, %d] to the blockchain for %d%n",
+                    Globals.getHostility(hostile),
+                    Globals.intToRobot(robotType),
+                    loc.x,
+                    loc.y,
+                    txCost);
         }
     }
 
     public static void sendSoupLoc(MapLocation loc, int txCost) throws GameActionException {
-        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        int[] message = new int[txLength];
         message[0] = teamCode;
         message[1] = MSG_SOUP_LOCATION;
         message[2] = loc.x;
@@ -106,7 +107,7 @@ public class Blockchain {
     }
     // Made as a pseudo template for future types of messages.
     public static void sendStatusUpdate(int updateType, int[] values, int txCost) throws GameActionException {
-        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        int[] message = new int[txLength];
         message[0] = teamCode;
         message[1] = MSG_STATUS_UPDATE;
         message[2] = updateType;
@@ -114,7 +115,7 @@ public class Blockchain {
         for(int x: values) {
             message[i] = x;
             i++;
-            if(i == BLOCKCHAIN_TRANSACTION_LENGTH)
+            if(i == txLength)
                 break;
         }
         if(rc.canSubmitTransaction(message, txCost)) {
@@ -148,9 +149,9 @@ public class Blockchain {
     }
 
     public static void sendJunkMessages(int enemyId) throws GameActionException{
-        int[] message = new int[BLOCKCHAIN_TRANSACTION_LENGTH];
+        int[] message = new int[txLength];
         message[0] = enemyId;
-        for(int i = 1; i < BLOCKCHAIN_TRANSACTION_LENGTH; i++) {
+        for(int i = 1; i < txLength; i++) {
             Random rand = new Random();
             message[i] = rand.nextInt(9999999);
         }

@@ -9,8 +9,8 @@ import java.util.LinkedList;
 public class Globals {
 
     // Global Variables
-    public static MapLocation HqLocation;
-    public static MapLocation enemyHqLocation;
+    public static MapLocation HqLocation = null;
+    public static MapLocation enemyHqLocation = null;
     public static LinkedList<MapLocation> goalLocs;
     public static LinkedList<MapLocation> usedLocs;
     public static int turnCount;
@@ -19,6 +19,7 @@ public class Globals {
     public static int countDesignSchool = 0;
     public static int countRefinery = 0;
     public static RobotController rc;
+    static Blockchain bc;
     public static int txLength = 7; //added because trying to use the provided one was causing issues
 
 

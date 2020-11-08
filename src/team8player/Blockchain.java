@@ -6,18 +6,6 @@ import static team8player.Globals.*;
 import java.util.*;
 
 public class Blockchain {
-    static RobotController rc;
-
-
-    /**
-     * Attempts to move in a given direction.
-     *
-     * @param rc
-     * @return creates a blockchain object for the player to control it
-     */
-    public Blockchain(RobotController rc) {
-        Blockchain.rc = rc;
-    }
 
     // Takes a filter for messages and returns the first matching message with -1 representing a wildcard
     // Ex to get enemy HQ Location:
@@ -66,7 +54,7 @@ public class Blockchain {
 
     // Message senders
     public static void sendRobotLoc(MapLocation loc, int robotType, int hostile, int txCost) throws GameActionException {
-        int[] message = new int[9];
+        int[] message = new int[txLength];
         message[0] = teamCode;
         message[1] = MSG_ROBOT_LOCATON;
         message[2] = robotType;
@@ -74,12 +62,7 @@ public class Blockchain {
         message[4] = loc.x;
         message[5] = loc.y;
         message[6] = -1;
-        System.out.printf("I just sent the location of a %s %s at [%d, %d] to the blockchain for %d%n",
-                Globals.getHostility(hostile),
-                Globals.intToRobot(robotType),
-                loc.x,
-                loc.y,
-                txCost);
+
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
             System.out.printf("I just sent the location of a %s %s at [%d, %d] to the blockchain for %d%n",

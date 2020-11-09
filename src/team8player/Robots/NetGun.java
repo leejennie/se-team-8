@@ -8,7 +8,6 @@ public class NetGun extends Unit {
 
     /**
      * Robot constructor
-     * @param rc the controller associated with this robot
      * @return a random RobotType
      */
     public NetGun() {
@@ -16,6 +15,6 @@ public class NetGun extends Unit {
 
     @Override
     public void run() throws GameActionException {
-        super.run();
+        super.startOfTurn();
     }
 }

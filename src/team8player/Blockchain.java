@@ -88,6 +88,7 @@ public class Blockchain {
                     txCost);
         }
     }
+
     // Made as a pseudo template for future types of messages.
     public static void sendStatusUpdate(int updateType, int[] values, int txCost) throws GameActionException {
         int[] message = new int[txLength];
@@ -140,18 +141,5 @@ public class Blockchain {
         }
         if(rc.canSubmitTransaction(message, 10))
             rc.submitTransaction(message, 10);
-    }
-
-
-    static void tryBlockchain() throws GameActionException {
-        if (turnCount < 3) {
-            int[] message = new int[7];
-            for (int i = 0; i < 7; i++) {
-                message[i] = 123;
-            }
-            if (rc.canSubmitTransaction(message, 10))
-                rc.submitTransaction(message, 10);
-        }
-        // System.out.println(rc.getRoundMessages(turnCount-1));
     }
 }

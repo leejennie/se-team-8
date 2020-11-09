@@ -14,7 +14,7 @@ public class DeliveryDrone extends  Unit {
 
     @Override
     public void run() throws GameActionException {
-        super.run();
+        super.startOfTurn();
         Team enemy = rc.getTeam().opponent();
         if (!rc.isCurrentlyHoldingUnit()) {
             // See if there are any enemy robots within capturing range

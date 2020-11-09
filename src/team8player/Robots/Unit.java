@@ -51,7 +51,7 @@ public abstract class Unit implements PlayerBot {
         } else return false;
     }
 
-    public void run() throws GameActionException {
+    public void startOfTurn() throws GameActionException {
         if(HqLocation == null || enemyHqLocation == null) {
             //check the blockchain every n turns for either HQ location
             if(rc.getRoundNum() % 3 == 0) {
@@ -77,4 +77,5 @@ public abstract class Unit implements PlayerBot {
             findHQ();
         }
     }
+    public abstract void run() throws GameActionException;
 }

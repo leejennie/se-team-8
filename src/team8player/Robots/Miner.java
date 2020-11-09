@@ -60,7 +60,7 @@ public class Miner extends Unit {
 
     @Override
     public void run() throws GameActionException {
-        super.run();
+        super.startOfTurn();
 
         if (countRefinery < 15)
             for (Direction dir : Direction.allDirections())

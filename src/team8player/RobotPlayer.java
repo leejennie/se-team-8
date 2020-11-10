@@ -9,7 +9,6 @@ import static battlecode.common.GameConstants.BLOCKCHAIN_TRANSACTION_LENGTH;
 
 public strictfp class RobotPlayer {
     static PlayerBot rbt;
-    static Blockchain bc;
     static RobotType rType;
 
     /**
@@ -63,19 +62,7 @@ public strictfp class RobotPlayer {
             try {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You can add the missing ones or rewrite this into your own control structure.
-                System.out.println("I'm a " + rType + "! Location " + rc.getLocation());
-
-                /*switch (rc.getType()) {
-                    case HQ:                 runHQ();                break;
-                    case MINER:              runMiner();             break;
-                    case REFINERY:           runRefinery();          break;
-                    case VAPORATOR:          runVaporator();         break;
-                    case DESIGN_SCHOOL:      runDesignSchool();      break;
-                    case FULFILLMENT_CENTER: runFulfillmentCenter(); break;
-                    case LANDSCAPER:         runLandscaper();        break;
-                    case DELIVERY_DRONE:     runDeliveryDrone();     break;
-                    case NET_GUN:            runNetGun();            break;
-                }*/
+                //System.out.println("I'm a " + rType + "! Location " + rc.getLocation());
 
                 rbt.run();
 

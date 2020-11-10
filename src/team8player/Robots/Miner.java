@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Miner extends Unit {
-    static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.VAPORATOR, RobotType.DESIGN_SCHOOL,
-            RobotType.FULFILLMENT_CENTER, RobotType.NET_GUN};
+    static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.DESIGN_SCHOOL, RobotType.FULFILLMENT_CENTER,
+            RobotType.VAPORATOR, RobotType.NET_GUN};
 
     /**
      * Robot constructor
@@ -84,35 +84,39 @@ public class Miner extends Unit {
             }
         }
         // if there isn't a design school nearby, try to build one.
-        int check_dsgn = 0;
-        int check_flflmnt = 0;
+        int[] spawnFilter = {0, 0, 0, 0, 0}
         for (RobotInfo rbt : nearbyBots) {
-            if (rbt.type == RobotType.DESIGN_SCHOOL) {
-                check_dsgn = 1;
-                break;
-            }
-            else {
-                if(rbt.type == RobotType.FULFILLMENT_CENTER) {
-                    check_flflmnt = 1;
-                }
+            switch(rbt.type) {
+                case RobotType.REFINERY:
+                    spawnFilter[0] += 1;
+                    break;
+                case RobotType.DESIGN_SCHOOL:
+                    spawnFilter[1] += 1;
+                    break;
+                case RobotType.FULFILLMENT_CENTER:
+                    spawnFilter[2] += 1;
+                    break;
+                case RobotType.VAPORATOR:
+                    spawnFilter[3] += 1;
+                    break;
+                case RobotType.NETGUN:
+                    spawnFilter[4] += 1;
+
             }
         }
-        if (check_dsgn == 0 || check_flflmnt == 0) for (Direction dir : Direction.allDirections()){
-            if (PlayerBot.tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                MapLocation loc = rc.getLocation().add(dir);
-                Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
-                        new int[]{UPD_BLD_BUILT, BLD_DESIGNSCH,
-                                loc.x, loc.y},
-                        10);
-                refineries.add(rc.getLocation());
-            }
-            if (PlayerBot.tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
-                MapLocation loc = rc.getLocation().add(dir);
-                Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
-                        new int[]{UPD_BLD_BUILT, BLD_FLMTCNTR,
-                                loc.x, loc.y},
-                        10);
-                refineries.add(rc.getLocation());
+        for(int i = 0; i < spawnFilter.length; i++) {
+            if (check == 0) {
+                for (Direction dir : Direction.allDirections()) {
+                    if (PlayerBot.tryBuild(spawnList[i], dir)) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
+                                new int[]{UPD_BLD_BUILT, BLD_DESIGNSCH,
+                                        loc.x, loc.y},
+                                10);
+                        refineries.add(rc.getLocation());
+                    }
+                }
+                break; //break out of loop because if one building could not be build, none of them can
             }
         }
 

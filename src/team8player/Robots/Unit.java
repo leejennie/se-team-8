@@ -22,10 +22,10 @@ public abstract class Unit implements PlayerBot {
     }
 
     static boolean tryMove() throws GameActionException {
-        for (Direction dir : Direction.allDirections())
-            if (tryMove(dir))
+        while(true) {
+            if(tryMove(Direction.values()[(int) Math.random() * Direction.values().length]))
                 return true;
-        return false;
+        }
     }
 
     /**

@@ -84,6 +84,7 @@ import java.util.Map;
                     }
                 }
             }
+<<<<<<< HEAD
             // if there isn't a design school nearby, try to build one.
             int[] spawnFilter = {0, 0, 0, 0, 0};
             for (RobotInfo rbt : nearbyBots) {
@@ -102,9 +103,31 @@ import java.util.Map;
                         break;
                     case RobotType.NET_GUN:
                         spawnFilter[4] += 1;
+=======
+        }
+        // if there isn't a design school nearby, try to build one.
+        int[] spawnFilter = {0, 0, 0, 0, 0};
+        for (RobotInfo rbt : nearbyBots) {
+            switch(rbt.type) {
+                case REFINERY:
+                    spawnFilter[0] += 1;
+                    break;
+                case DESIGN_SCHOOL:
+                    spawnFilter[1] += 1;
+                    break;
+                case FULFILLMENT_CENTER:
+                    spawnFilter[2] += 1;
+                    break;
+                case VAPORATOR:
+                    spawnFilter[3] += 1;
+                    break;
+                case NET_GUN:
+                    spawnFilter[4] += 1;
+>>>>>>> c877c6a6fb8364590ddca0202c89ff88910d9dd3
 
                 }
             }
+<<<<<<< HEAD
             for (int i = 0; i < spawnFilter.length; i++) {
                 if (check == 0) {
                     for (Direction dir : Direction.allDirections()) {
@@ -116,6 +139,19 @@ import java.util.Map;
                                     10);
                             refineries.add(rc.getLocation());
                         }
+=======
+        }
+        for(int i = 0; i < spawnFilter.length; i++) {
+            if (spawnFilter[i] == 0) {
+                for (Direction dir : Direction.allDirections()) {
+                    if (PlayerBot.tryBuild(spawnList[i], dir)) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
+                                new int[]{UPD_BLD_BUILT, BLD_DESIGNSCH,
+                                        loc.x, loc.y},
+                                10);
+                        refineries.add(rc.getLocation());
+>>>>>>> c877c6a6fb8364590ddca0202c89ff88910d9dd3
                     }
                     break; //break out of loop because if one building could not be build, none of them can
                 }

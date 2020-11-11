@@ -84,28 +84,28 @@ public class Miner extends Unit {
             }
         }
         // if there isn't a design school nearby, try to build one.
-        int[] spawnFilter = {0, 0, 0, 0, 0}
+        int[] spawnFilter = {0, 0, 0, 0, 0};
         for (RobotInfo rbt : nearbyBots) {
             switch(rbt.type) {
-                case RobotType.REFINERY:
+                case REFINERY:
                     spawnFilter[0] += 1;
                     break;
-                case RobotType.DESIGN_SCHOOL:
+                case DESIGN_SCHOOL:
                     spawnFilter[1] += 1;
                     break;
-                case RobotType.FULFILLMENT_CENTER:
+                case FULFILLMENT_CENTER:
                     spawnFilter[2] += 1;
                     break;
-                case RobotType.VAPORATOR:
+                case VAPORATOR:
                     spawnFilter[3] += 1;
                     break;
-                case RobotType.NETGUN:
+                case NET_GUN:
                     spawnFilter[4] += 1;
 
             }
         }
         for(int i = 0; i < spawnFilter.length; i++) {
-            if (check == 0) {
+            if (spawnFilter[i] == 0) {
                 for (Direction dir : Direction.allDirections()) {
                     if (PlayerBot.tryBuild(spawnList[i], dir)) {
                         MapLocation loc = rc.getLocation().add(dir);

@@ -1,6 +1,8 @@
 package team8player;
 
 import battlecode.common.*;
+import sun.awt.image.ImageWatched;
+
 import static team8player.Globals.*;
 
 import java.util.*;
@@ -13,7 +15,7 @@ public class Blockchain {
     public static LinkedList<int[]> getMessages(int n, int[] msgFilter) throws GameActionException {
         int count = 0;
         LinkedList<int[]> result = new LinkedList<int[]>() {};
-        for(int i = 1; i < rc.getRoundNum(); i++) {
+        for(int i = lastTurnUpdatedFromBC; i < rc.getRoundNum(); i++) {
             for(Transaction t : rc.getBlock(i)) {
                 int[] message = t.getMessage();
                 for(int j = 0; j < txLength; j++) {
@@ -32,7 +34,12 @@ public class Blockchain {
         return result;
     }
 
-    public static void getGoalLocs(int robotType) throws GameActionException {
+    public static LinkedList<int[]> getTeamMessages() throws GameActionException {
+        int[] filter = {teamCode, -1, -1, -1, -1, -1, -1};
+        return getMessages(-1, filter);
+    }
+
+/*    public static void getGoalLocs(int robotType) throws GameActionException {
         goalLocs = new LinkedList<>();
         switch (robotType) {
             // _robot_type._MINER.id is a constant, but can't be used in this switch for some reason???
@@ -50,23 +57,38 @@ public class Blockchain {
                 }
         }
         System.out.println("I just updated my goal locations!");
-    }
+    }*/
 
+<<<<<<< HEAD
     // Message senders
     public static void sendRobotLoc(MapLocation loc, int robotType, int hostile, int txCost) throws GameActionException {
+=======
+    // Message senders  *** removing hostility since this will only be used to sent the location of enemies
+    public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
+>>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
         int[] message = new int[txLength];
         message[0] = teamCode;
         message[1] = MSG_ROBOT_LOCATON;
         message[2] = robotType;
+<<<<<<< HEAD
         message[3] = hostile; // 0 for ally, 1 for enemy robot
         message[4] = loc.x;
         message[5] = loc.y;
         message[6] = -1;
 
+=======
+        message[3] = loc.x;
+        message[4] = loc.y;
+        message[5] = -1;
+        System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",
+                Globals.intToRobot(robotType),
+                loc.x,
+                loc.y,
+                txCost);
+>>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
-            System.out.printf("I just sent the location of a %s %s at [%d, %d] to the blockchain for %d%n",
-                    Globals.getHostility(hostile),
+            System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",
                     Globals.intToRobot(robotType),
                     loc.x,
                     loc.y,
@@ -105,6 +127,91 @@ public class Blockchain {
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
             System.out.printf("I sent a %s update to the blockchain for %d!%n");
+        }
+    }
+
+    /*
+     * Parse relevant messages from the blockchain
+     */
+    public static void updateListsFromBC() throws GameActionException {
+        LinkedList<int[]> messages = getTeamMessages();
+        for(int[] msg: messages) {
+            switch (msg[1]) {
+                case MSG_ROBOT_LOCATON:
+                    parseRobotLoc(msg);
+                    break;
+                case MSG_SOUP_LOCATION:
+                    parseSoupLoc(msg);
+                    break;
+                case MSG_STATUS_UPDATE:
+                    parseUpdate(msg);
+                    break;
+                default:
+                    break;
+            }
+        }
+        lastTurnUpdatedFromBC = turnCount;
+    }
+
+    public static void parseRobotLoc(int[] message) {
+        switch(message[2]) {
+            case UNT_MINER:
+                break;
+            case UNT_LANDSCAPER:
+                break;
+            case UNT_DDRONE:
+                break;
+            case BLD_HQ:
+                break;
+            case BLD_REFINERY:
+                break;
+            case BLD_VAPORATOR:
+                break;
+            case BLD_DESIGNSCH:
+                break;
+            case BLD_FLMTCNTR:
+                break;
+            case BLD_NETGUN:
+                break;
+            case UNT_COW:
+                break;
+        }
+    }
+
+    public static void parseSoupLoc(int[] message) {
+        soupLocs.add(new MapLocation(message[2], message[3]));
+    }
+
+    public static void parseUpdate(int[] message) {
+        switch(message[2]) {
+            case UPD_ROBOT_LOCATION:
+                updateRobotLoc(message);
+        }
+    }
+
+    public static void updateRobotLoc(int[] message) {
+        switch (message[3]) {
+            case UNT_MINER:
+                break;
+            case UNT_LANDSCAPER:
+                break;
+            case UNT_DDRONE:
+                break;
+            case BLD_HQ:
+                enemyHqLocation = new MapLocation(message[4], message[5]);
+                break;
+            case BLD_REFINERY:
+                break;
+            case BLD_VAPORATOR:
+                break;
+            case BLD_DESIGNSCH:
+                break;
+            case BLD_FLMTCNTR:
+                break;
+            case BLD_NETGUN:
+                break;
+            case UNT_COW:
+                break;
         }
     }
 

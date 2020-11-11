@@ -2,6 +2,7 @@ package team8player;
 
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import com.sun.tools.javac.code.Type;
 
 import java.util.LinkedList;
@@ -9,18 +10,25 @@ import java.util.LinkedList;
 public class Globals {
 
     // Global Variables
+<<<<<<< HEAD
     public static MapLocation HqLocation = null;
     public static MapLocation enemyHqLocation = null;
     public static LinkedList<MapLocation> goalLocs;
+=======
+    public static MapLocation HqLocation;
+    public static MapLocation enemyHqLocation;
+    public static MapLocation currentGoal;
+    public static LinkedList<MapLocation> soupLocs;
+>>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
     public static LinkedList<MapLocation> usedLocs;
+    public static LinkedList<MapLocation> refineries;
+    public static RobotInfo[] nearbyBots;
     public static int turnCount;
     public static int numMiners = 0;
     public static int lastAction = -1; // so we can know when a bot is doing something different on their current turn
-    public static int countDesignSchool = 0;
-    public static int countRefinery = 0;
     public static RobotController rc;
     public static int txLength = 7; //added because trying to use the provided one was causing issues
-
+    public static int lastTurnUpdatedFromBC = 1;
 
     public static final int teamCode = 2662718; // Randomly generated number for id
 
@@ -39,6 +47,8 @@ public class Globals {
     public static final int UPD_ROBOT_LOCATION  = 0;
     public static final int UPD_SOUP_LOCATION   = 1;
     public static final int UPD_COW_LOCATION    = 2;
+    public static final int UPD_UNT_BUILT       = 3;
+    public static final int UPD_BLD_BUILT       = 4;
 
     // Hostility
     public static final int HOS_ALLY            = 0;

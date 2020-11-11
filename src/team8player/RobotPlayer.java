@@ -55,14 +55,19 @@ public strictfp class RobotPlayer {
 
         turnCount = 0;
 
-        System.out.println("I'm a " + rType + " and I just got created!");
+        //System.out.println("I'm a " + rType + " and I just got created!");
         while (true) {
             turnCount += 1;
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You can add the missing ones or rewrite this into your own control structure.
+<<<<<<< HEAD
                 System.out.println("I'm a " + rType + "! Location " + rc.getLocation());
+=======
+                //System.out.println("I'm a " + rType + "! Location " + rc.getLocation());
+
+>>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
                 rbt.run();
 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again

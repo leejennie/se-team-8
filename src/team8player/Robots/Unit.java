@@ -13,27 +13,19 @@ public abstract class Unit implements PlayerBot {
     public Unit() {
     }
 
-    static int findHQ() throws GameActionException {
-        for (RobotInfo robot : rc.senseNearbyRobots()) {
+    static void findHQ() throws GameActionException {
+        for (RobotInfo robot : nearbyBots) {
             if(robot.type == RobotType.HQ) {
-                if(robot.team == rc.getTeam()) {
-                    Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, HOS_ALLY, 10);
-                    return HOS_ALLY;
-                }
-                else {
-                    Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, HOS_ENEMY, 10);
-                    return HOS_ENEMY;
-                }
+                Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
             }
         }
-        return -1;
     }
 
     static boolean tryMove() throws GameActionException {
-        for (Direction dir : Direction.allDirections())
-            if (tryMove(dir))
+        while(true) {
+            if(tryMove(Direction.values()[(int) Math.random() * Direction.values().length]))
                 return true;
-        return false;
+        }
     }
 
     /**
@@ -51,25 +43,32 @@ public abstract class Unit implements PlayerBot {
         } else return false;
     }
 
+<<<<<<< HEAD
     public void startOfTurn() throws GameActionException {
+=======
+    public void run() throws GameActionException {
+        Blockchain.updateListsFromBC();
+        nearbyBots = rc.senseNearbyRobots();
+
+>>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
         if(HqLocation == null || enemyHqLocation == null) {
             //check the blockchain every n turns for either HQ location
             if(rc.getRoundNum() % 3 == 0) {
                 if(HqLocation == null) {
                     int[] filter = {teamCode, MSG_ROBOT_LOCATON,
                             BLD_HQ, HOS_ALLY, -1, -1, -1};
-                    LinkedList<int[]> tmpa = Blockchain.getMessages(1, filter);
+                    LinkedList<int[]> tmp = Blockchain.getMessages(1, filter);
                     int[] message = {0};
-                    if(!tmpa.isEmpty()) { message = tmpa.get(0); }
+                    if(!tmp.isEmpty()) { message = tmp.get(0); }
                     if(message[0] == teamCode) { HqLocation = new MapLocation(message[4], message[5]); }
                     System.out.printf("I just updated the location an ally HQ from the Blockchain!%n");
                 }
                 if(enemyHqLocation == null) {
                     int[] filter = {teamCode, MSG_ROBOT_LOCATON,
                             BLD_HQ, HOS_ALLY, -1, -1, -1};
-                    LinkedList<int[]> tmpe = Blockchain.getMessages(1, filter);
+                    LinkedList<int[]> tmp = Blockchain.getMessages(1, filter);
                     int[] message = {0};
-                    if(!tmpe.isEmpty()) { message = tmpe.get(0); }
+                    if(!tmp.isEmpty()) { message = tmp.get(0); }
                     if(message[0] == teamCode) { enemyHqLocation = new MapLocation(message[4], message[5]); }
                     System.out.printf("I just updated the location an enemy HQ from the Blockchain!%n");
                 }
@@ -77,5 +76,17 @@ public abstract class Unit implements PlayerBot {
             findHQ();
         }
     }
+<<<<<<< HEAD
     public abstract void run() throws GameActionException;
+=======
+
+    static void endTurn() throws GameActionException {
+
+        // If currentGoal != null, move in that directio
+        if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));
+
+        // If nothing else to do, move in a random dir
+        tryMove();
+    }
+>>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
 }

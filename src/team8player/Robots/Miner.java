@@ -6,7 +6,7 @@ import static team8player.Globals.*;
 
 import java.util.LinkedList;
 
-public class Miner extends Unit {
+public class mMiner extends Unit {
     static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.VAPORATOR, RobotType.DESIGN_SCHOOL,
             RobotType.FULFILLMENT_CENTER, RobotType.NET_GUN};
 

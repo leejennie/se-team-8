@@ -43,14 +43,12 @@ public abstract class Unit implements PlayerBot {
         } else return false;
     }
 
-<<<<<<< HEAD
-    public void startOfTurn() throws GameActionException {
-=======
+    public void startOfTurn() throws GameActionException {}
+
     public void run() throws GameActionException {
         Blockchain.updateListsFromBC();
         nearbyBots = rc.senseNearbyRobots();
 
->>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
         if(HqLocation == null || enemyHqLocation == null) {
             //check the blockchain every n turns for either HQ location
             if(rc.getRoundNum() % 3 == 0) {
@@ -76,9 +74,8 @@ public abstract class Unit implements PlayerBot {
             findHQ();
         }
     }
-<<<<<<< HEAD
+
     public abstract void run() throws GameActionException;
-=======
 
     static void endTurn() throws GameActionException {
 
@@ -88,5 +85,5 @@ public abstract class Unit implements PlayerBot {
         // If nothing else to do, move in a random dir
         tryMove();
     }
->>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
+
 }

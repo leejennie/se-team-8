@@ -10,16 +10,13 @@ import java.util.LinkedList;
 public class Globals {
 
     // Global Variables
-<<<<<<< HEAD
     public static MapLocation HqLocation = null;
     public static MapLocation enemyHqLocation = null;
     public static LinkedList<MapLocation> goalLocs;
-=======
     public static MapLocation HqLocation;
     public static MapLocation enemyHqLocation;
     public static MapLocation currentGoal;
     public static LinkedList<MapLocation> soupLocs;
->>>>>>> 10942cb058166909dcff33de5c63f34cd0f53f55
     public static LinkedList<MapLocation> usedLocs;
     public static LinkedList<MapLocation> refineries;
     public static RobotInfo[] nearbyBots;

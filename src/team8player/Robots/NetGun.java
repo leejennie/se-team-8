@@ -17,5 +17,9 @@ public class NetGun extends Unit {
     @Override
     public void run() throws GameActionException {
         super.run();
+        for (int i = 0; i < 15; i++) {
+            if (rc.canShootUnit(i))
+                rc.shootUnit(i);
+        }
     }
 }

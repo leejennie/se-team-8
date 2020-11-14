@@ -24,6 +24,8 @@ public class Globals {
     public static RobotInfo[] nearbyBots;
     public static int turnCount;
     public static int numMiners = 0;
+    public static int numDrones = 0;
+    public static int numLandscapers = 0;
     public static int lastAction = -1; // so we can know when a bot is doing something different on their current turn
     public static RobotController rc;
     public static int txLength = 7; //added because trying to use the provided one was causing issues

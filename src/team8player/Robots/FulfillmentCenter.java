@@ -20,8 +20,11 @@ public class FulfillmentCenter extends Building {
     public void run() throws GameActionException {
         super.run();
 
-        for (Direction dir : Direction.allDirections()) {
-            PlayerBot.tryBuild(RobotType.DELIVERY_DRONE, dir);
+        if(numDrones < refineries.size()) { // don't spawn more Drones than there are refineries
+            for (Direction dir : Direction.allDirections()) {
+                PlayerBot.tryBuild(RobotType.DELIVERY_DRONE, dir);
+                numDrones++;
+            }
         }
     }
 }

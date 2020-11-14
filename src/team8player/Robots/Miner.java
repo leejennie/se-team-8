@@ -68,6 +68,14 @@ public class Miner extends Unit {
         // Call the parent's run method to start the turn
         super.run();
 
+        for (Direction dir : Direction.allDirections())
+            if (tryMine(dir)) {
+                // Check if this is the first time mining here
+
+
+                System.out.println("I mined soup! " + rc.getSoupCarrying());
+                lastAction = 0;
+            }
 
         // if mining more would cause waste, try to deposit soup
         if(rc.getSoupCarrying() > RobotType.MINER.soupLimit - GameConstants.SOUP_MINING_RATE) {

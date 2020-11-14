@@ -2,6 +2,8 @@ package team8player.Robots;
 
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
+import team8player.Blockchain;
+
 import static team8player.Globals.*;
 
 public class Building implements PlayerBot {
@@ -15,5 +17,7 @@ public class Building implements PlayerBot {
     }
 
     @Override
-    public void run() throws GameActionException {}
+    public void run() throws GameActionException {
+        Blockchain.updateListsFromBC();
+    }
 }

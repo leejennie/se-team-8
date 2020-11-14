@@ -3,13 +3,15 @@ package team8player.Robots;
 import battlecode.common.GameActionException;
 import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
+
 import static team8player.Globals.*;
 
 public class NetGun extends Unit {
 
     /**
      * Robot constructor
-     * @param rc the controller associated with this robot
      * @return a random RobotType
      */
     public NetGun() {
@@ -18,9 +20,12 @@ public class NetGun extends Unit {
     @Override
     public void run() throws GameActionException {
         super.run();
-        for (int i = 0; i < GameConstants.NET_GUN_SHOOT_RADIUS_SQUARED; i++) {
-            if (rc.canShootUnit(i))
-                rc.shootUnit(i);
+        // check if there's anything it can use the net gun on
+        nearbyBots = rc.senseNearbyRobots();
+        for(RobotInfo rbt: nearbyBots) {
+            if(rbt.type == RobotType.DELIVERY_DRONE && rbt.team != rc.getTeam())
+                if(rc.canShootUnit(rbt.ID))
+                    rc.shootUnit(rbt.ID);
         }
     }
 }

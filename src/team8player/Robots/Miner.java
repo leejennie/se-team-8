@@ -1,6 +1,7 @@
 package team8player.Robots;
 
 import battlecode.common.*;
+import battlecode.server.GameState;
 import team8player.*;
 import static team8player.Globals.*;
 
@@ -9,8 +10,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Miner extends Unit {
-    static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.VAPORATOR, RobotType.DESIGN_SCHOOL,
-            RobotType.FULFILLMENT_CENTER, RobotType.NET_GUN};
+    static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.DESIGN_SCHOOL, RobotType.FULFILLMENT_CENTER,
+            RobotType.VAPORATOR, RobotType.NET_GUN};
 
     /**
      * Robot constructor
@@ -70,7 +71,7 @@ public class Miner extends Unit {
 
         // if mining more would cause waste, try to deposit soup
         if(rc.getSoupCarrying() > RobotType.MINER.soupLimit - GameConstants.SOUP_MINING_RATE) {
-            // try to refine
+            // try to deposit
             for(Direction dir: Direction.allDirections()) {
                 tryDeposit(dir);
             }
@@ -83,36 +84,57 @@ public class Miner extends Unit {
                 }
             }
         }
-        // if there isn't a design school nearby, try to build one.
-        int check_dsgn = 0;
-        int check_flflmnt = 0;
+        // try to build based on the spawnFilter list
+        int[] spawnFilter = {0, 0, 0, 0, 0};
         for (RobotInfo rbt : nearbyBots) {
-            if (rbt.type == RobotType.DESIGN_SCHOOL) {
-                check_dsgn = 1;
-                break;
-            }
-            else {
-                if(rbt.type == RobotType.FULFILLMENT_CENTER) {
-                    check_flflmnt = 1;
-                }
+            // if any of the bots are an enemy drone, try to build a net gun
+            if(rbt.type == RobotType.DELIVERY_DRONE && rbt.team != rc.getTeam())
+                for(int i = 0; i < 3; i++)
+                    spawnFilter[i]++;
+            switch(rbt.type) {
+                case HQ:
+                    spawnFilter[0]++;
+                case REFINERY:
+                    spawnFilter[0]++;
+                    break;
+                case DESIGN_SCHOOL:
+                    spawnFilter[1]++;
+                    break;
+                case FULFILLMENT_CENTER:
+                    spawnFilter[2]++;
+                    break;
+                case VAPORATOR:
+                    spawnFilter[3]++;
+                    break;
+                case NET_GUN:
+                    spawnFilter[4]++;
+
             }
         }
-        if (check_dsgn == 0 || check_flflmnt == 0) for (Direction dir : Direction.allDirections()){
-            if (PlayerBot.tryBuild(RobotType.DESIGN_SCHOOL, dir)) {
-                MapLocation loc = rc.getLocation().add(dir);
-                Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
-                        new int[]{UPD_BLD_BUILT, BLD_DESIGNSCH,
-                                loc.x, loc.y},
-                        10);
-                refineries.add(rc.getLocation());
-            }
-            if (PlayerBot.tryBuild(RobotType.FULFILLMENT_CENTER, dir)) {
-                MapLocation loc = rc.getLocation().add(dir);
-                Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
-                        new int[]{UPD_BLD_BUILT, BLD_FLMTCNTR,
-                                loc.x, loc.y},
-                        10);
-                refineries.add(rc.getLocation());
+        // Conditions to skip to certain buildings
+        // if there's more than twice as many refineries as designSchools, don't build more refineries
+        if(refineries.size() > designSchools.size() * 2 || (refineries.size() > 0 && designSchools.size() == 0))
+            spawnFilter[0]++;
+        // if there's more design schools than fulfillment centers, don't build design schools
+        if(designSchools.size() > fulCenters.size())
+            spawnFilter[1]++;
+        // if the current location is above a pollution threshold, prioritize a vaporator
+        if(rc.sensePollution(rc.getLocation()) > 20) {
+            spawnFilter[0]++;
+            spawnFilter[1]++;
+        }
+        for(int i = 0; i < spawnFilter.length; i++) {
+            if (spawnFilter[i] == 0) {
+                for (Direction dir : Direction.allDirections()) {
+                    if (PlayerBot.tryBuild(spawnList[i], dir)) {
+                        MapLocation loc = rc.getLocation().add(dir);
+                        Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
+                                new int[]{UPD_RBT_BUILT, BLD_DESIGNSCH,
+                                        loc.x, loc.y},
+                                10);
+                    }
+                }
+                break; //break out of loop because if one building could not be build, none of them can
             }
         }
 

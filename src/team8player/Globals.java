@@ -1,5 +1,6 @@
 package team8player;
 
+import battlecode.common.Direction;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
@@ -13,12 +14,18 @@ public class Globals {
     public static MapLocation HqLocation;
     public static MapLocation enemyHqLocation;
     public static MapLocation currentGoal;
-    public static LinkedList<MapLocation> soupLocs;
-    public static LinkedList<MapLocation> usedLocs;
-    public static LinkedList<MapLocation> refineries;
+    public static LinkedList<MapLocation> soupLocs = new LinkedList<>();
+    public static LinkedList<MapLocation> usedLocs = new LinkedList<>();
+    public static LinkedList<MapLocation> refineries = new LinkedList<>();
+    public static LinkedList<MapLocation> designSchools = new LinkedList<>();
+    public static LinkedList<MapLocation> fulCenters = new LinkedList<>();
+    public static Direction currDirection = Direction.values()[(int) (Math.random() * Direction.values().length)];
+    public static int dirTurnsLeft = 0;
     public static RobotInfo[] nearbyBots;
     public static int turnCount;
     public static int numMiners = 0;
+    public static int numDrones = 0;
+    public static int numLandscapers = 0;
     public static int lastAction = -1; // so we can know when a bot is doing something different on their current turn
     public static RobotController rc;
     public static int txLength = 7; //added because trying to use the provided one was causing issues
@@ -41,8 +48,7 @@ public class Globals {
     public static final int UPD_ROBOT_LOCATION  = 0;
     public static final int UPD_SOUP_LOCATION   = 1;
     public static final int UPD_COW_LOCATION    = 2;
-    public static final int UPD_UNT_BUILT       = 3;
-    public static final int UPD_BLD_BUILT       = 4;
+    public static final int UPD_RBT_BUILT       = 3;
 
     // Hostility
     public static final int HOS_ALLY            = 0;
@@ -61,6 +67,9 @@ public class Globals {
     public static final int BLD_NETGUN          = 8;
     // cows
     public static final int UNT_COW             = 9;
+
+    // Other various globals
+    public static final int MAX_TURNS_DIR       = 5;
 
 
 
@@ -120,6 +129,20 @@ public class Globals {
     public static String getHostility(int id) {
         if(id == HOS_ALLY) { return "ally";}
         return "enemy";
+    }
+
+    public static String getUpdateType(int id) {
+        switch (id) {
+            case UPD_ROBOT_LOCATION:
+                return "Robot Location";
+            case UPD_SOUP_LOCATION:
+                return "Soup Location";
+            case UPD_COW_LOCATION:
+                return "Cow Location";
+            case UPD_RBT_BUILT:
+                return "Robot Built";
+        }
+        return "!?!?";
     }
 
 }

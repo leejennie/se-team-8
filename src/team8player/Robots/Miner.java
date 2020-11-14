@@ -132,7 +132,7 @@ public class Miner extends Unit {
             spawnFilter[1]++;
         }
         for(int i = 0; i < spawnFilter.length; i++) {
-            if (spawnFilter[i] == 0) {
+            if (spawnFilter[i] < 1) {
                 for (Direction dir : Direction.allDirections()) {
                     if (PlayerBot.tryBuild(spawnList[i], dir)) {
                         MapLocation loc = rc.getLocation().add(dir);

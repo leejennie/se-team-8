@@ -21,7 +21,7 @@ public strictfp class RobotPlayer {
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
         Globals.rc = rc;
-        rType = rc.getType(); // Get the robot type and store it to reduce bytecode consumprion with later calls
+        rType = rc.getType(); // Get the robot type and store it to reduce bytecode consumption with later calls
         // Create a robot with the Robot Controller
         switch (rType) {
             case MINER:

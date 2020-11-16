@@ -75,8 +75,6 @@ public abstract class Unit implements PlayerBot {
         }
     }
 
-    public abstract void run() throws GameActionException;
-
     static void endTurn() throws GameActionException {
 
         // If currentGoal != null, move in that directio
@@ -85,5 +83,4 @@ public abstract class Unit implements PlayerBot {
         // If nothing else to do, move in a random dir
         tryMove();
     }
-
 }

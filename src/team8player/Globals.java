@@ -10,9 +10,6 @@ import java.util.LinkedList;
 public class Globals {
 
     // Global Variables
-    public static MapLocation HqLocation = null;
-    public static MapLocation enemyHqLocation = null;
-    public static LinkedList<MapLocation> goalLocs;
     public static MapLocation HqLocation;
     public static MapLocation enemyHqLocation;
     public static MapLocation currentGoal;

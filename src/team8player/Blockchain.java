@@ -59,9 +59,6 @@ public class Blockchain {
         System.out.println("I just updated my goal locations!");
     }*/
 
-    // Message senders
-    public static void sendRobotLoc(MapLocation loc, int robotType, int hostile, int txCost) throws GameActionException {}
-
     // Message senders  *** removing hostility since this will only be used to sent the location of enemies
     public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
 
@@ -69,11 +66,6 @@ public class Blockchain {
         message[0] = teamCode;
         message[1] = MSG_ROBOT_LOCATON;
         message[2] = robotType;
-        message[3] = hostile; // 0 for ally, 1 for enemy robot
-        message[4] = loc.x;
-        message[5] = loc.y;
-        message[6] = -1;
-
         message[3] = loc.x;
         message[4] = loc.y;
         message[5] = -1;
@@ -82,7 +74,6 @@ public class Blockchain {
                 loc.x,
                 loc.y,
                 txCost);
-
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
             System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",

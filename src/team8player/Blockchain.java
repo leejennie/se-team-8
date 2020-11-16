@@ -153,6 +153,8 @@ public class Blockchain {
                 updateRobotLoc(message);
             case UPD_RBT_BUILT:
                 updateRobotBuilt(message);
+            case UPD_SOUP_USED:
+                moveSoupToUsed(message);
         }
     }
 
@@ -206,6 +208,14 @@ public class Blockchain {
             case UNT_COW:
                 break;
         }
+    }
+
+    public static void moveSoupToUsed(int[] message) {
+        MapLocation tmp = new MapLocation(message[3], message[4]);
+        if(soupLocs.contains(tmp))
+            soupLocs.remove(tmp);
+        if(!usedLocs.contains(tmp))
+            usedLocs.add(tmp);
     }
 
 

@@ -49,6 +49,7 @@ public class Globals {
     public static final int UPD_SOUP_LOCATION   = 1;
     public static final int UPD_COW_LOCATION    = 2;
     public static final int UPD_RBT_BUILT       = 3;
+    public static final int UPD_SOUP_USED       = 4;
 
     // Hostility
     public static final int HOS_ALLY            = 0;

@@ -34,6 +34,8 @@ public strictfp class RobotPlayer {
                 rbt = new DeliveryDrone();
                 break;
             case HQ:
+                MapLocation loc = rc.getLocation();
+                Blockchain.sendStatusUpdate(UPD_RBT_BUILT, new int[]{BLD_HQ, loc.x, loc.y}, 10);
                 rbt = new HQ();
                 break;
             case REFINERY:

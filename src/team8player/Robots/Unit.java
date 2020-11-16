@@ -15,17 +15,27 @@ public abstract class Unit implements PlayerBot {
 
     static void findHQ() throws GameActionException {
         for (RobotInfo robot : nearbyBots) {
-            if(robot.type == RobotType.HQ) {
+            if(robot.type == RobotType.HQ && robot.team != rc.getTeam()) {
                 Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
             }
         }
     }
 
     static boolean tryMove() throws GameActionException {
-        while(true) {
-            if(tryMove(Direction.values()[(int) Math.random() * Direction.values().length]))
-                return true;
+        if(dirTurnsLeft == 0) {
+            Direction tmpDir = currDirection;
+            while(tmpDir == currDirection) {
+                tmpDir = Direction.values()[(int) (Math.random() * Direction.values().length)];
+            }
+            currDirection = tmpDir;
+            dirTurnsLeft = (int)(Math.random() * MAX_TURNS_DIR) + 1;
         }
+        if(!tryMove(currDirection)) {
+            dirTurnsLeft = 0;
+            return tryMove();
+        }
+        dirTurnsLeft--;
+        return true;
     }
 
     /**
@@ -36,11 +46,16 @@ public abstract class Unit implements PlayerBot {
      * @throws GameActionException
      */
     static boolean tryMove(Direction dir) throws GameActionException {
+        MapLocation tmp = rc.getLocation().add(dir);
+        System.out.printf("Trying to move to [%d] [%d]%n", tmp.x, tmp.y);
+        if(rc.canSenseLocation(rc.getLocation().add(dir))) {
+            if (rc.isReady() && rc.canMove(dir)) {
+                rc.move(dir);
+                return true;
 
-        if (rc.isReady() && rc.canMove(dir)) {
-            rc.move(dir);
-            return true;
-        } else return false;
+            }
+        }
+        return false;
     }
 
     public void startOfTurn() throws GameActionException {}
@@ -49,28 +64,8 @@ public abstract class Unit implements PlayerBot {
         Blockchain.updateListsFromBC();
         nearbyBots = rc.senseNearbyRobots();
 
-        if(HqLocation == null || enemyHqLocation == null) {
-            //check the blockchain every n turns for either HQ location
-            if(rc.getRoundNum() % 3 == 0) {
-                if(HqLocation == null) {
-                    int[] filter = {teamCode, MSG_ROBOT_LOCATON,
-                            BLD_HQ, HOS_ALLY, -1, -1, -1};
-                    LinkedList<int[]> tmp = Blockchain.getMessages(1, filter);
-                    int[] message = {0};
-                    if(!tmp.isEmpty()) { message = tmp.get(0); }
-                    if(message[0] == teamCode) { HqLocation = new MapLocation(message[4], message[5]); }
-                    System.out.printf("I just updated the location an ally HQ from the Blockchain!%n");
-                }
-                if(enemyHqLocation == null) {
-                    int[] filter = {teamCode, MSG_ROBOT_LOCATON,
-                            BLD_HQ, HOS_ALLY, -1, -1, -1};
-                    LinkedList<int[]> tmp = Blockchain.getMessages(1, filter);
-                    int[] message = {0};
-                    if(!tmp.isEmpty()) { message = tmp.get(0); }
-                    if(message[0] == teamCode) { enemyHqLocation = new MapLocation(message[4], message[5]); }
-                    System.out.printf("I just updated the location an enemy HQ from the Blockchain!%n");
-                }
-            }
+        // the rest of this method is now covered by updateListsFromBC
+        if(enemyHqLocation == null) {
             findHQ();
         }
     }

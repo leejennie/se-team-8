@@ -49,9 +49,7 @@ public class Landscaper extends Unit {
                     return;
                 }
         }
-        // If no other actions can be performed, try to move
-        Unit.tryMove();
-
+        endTurn();
     }
 
     /**

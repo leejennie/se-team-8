@@ -10,7 +10,6 @@ public class DesignSchool extends Building {
 
     /**
      * Robot constructor
-     * @param rc the controller associated with this robot
      * @return a random RobotType
      */
     public DesignSchool() throws GameActionException {
@@ -19,9 +18,12 @@ public class DesignSchool extends Building {
     @Override
     public void run() throws GameActionException {
         super.run();
-        for (Direction dir : Direction.allDirections())
-            if(PlayerBot.tryBuild(RobotType.LANDSCAPER, dir)) {
-                System.out.println("Landscaper created");
-            }
+
+        if(numLandscapers < 3) { // just an arbitrary limit until we decide on a strategy for these
+            for (Direction dir : Direction.allDirections())
+                if (PlayerBot.tryBuild(RobotType.LANDSCAPER, dir)) {
+                    System.out.println("Landscaper created");
+                }
+        }
     }
 }

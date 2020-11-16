@@ -1,7 +1,6 @@
 package team8player;
 
 import battlecode.common.*;
-import sun.awt.image.ImageWatched;
 
 import static team8player.Globals.*;
 
@@ -38,26 +37,6 @@ public class Blockchain {
         int[] filter = {teamCode, -1, -1, -1, -1, -1, -1};
         return getMessages(-1, filter);
     }
-
-/*    public static void getGoalLocs(int robotType) throws GameActionException {
-        goalLocs = new LinkedList<>();
-        switch (robotType) {
-            // _robot_type._MINER.id is a constant, but can't be used in this switch for some reason???
-            // todo: add other robot types
-            case 0:
-                int[] filter = {teamCode, MSG_SOUP_LOCATION, -1, -1, -1, -1, -1};
-                LinkedList<int[]> minerTmp = getMessages(-1, filter);
-                if(minerTmp.get(0)[0] == teamCode) {
-                    for(int[] m: minerTmp) {
-                        MapLocation tmpLoc = new MapLocation(m[2], m[3]);
-                        if(!usedLocs.contains(tmpLoc)) {
-                            goalLocs.add(tmpLoc);
-                        }
-                    }
-                }
-        }
-        System.out.println("I just updated my goal locations!");
-    }*/
 
     // Message senders  *** removing hostility since this will only be used to sent the location of enemies
     public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
@@ -114,7 +93,7 @@ public class Blockchain {
         }
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
-            System.out.printf("I sent a %s update to the blockchain for %d!%n");
+            System.out.printf("I sent a %s update to the blockchain for %d!%n", getUpdateType(message[2]), txCost);
         }
     }
 
@@ -174,6 +153,10 @@ public class Blockchain {
         switch(message[2]) {
             case UPD_ROBOT_LOCATION:
                 updateRobotLoc(message);
+            case UPD_RBT_BUILT:
+                updateRobotBuilt(message);
+            case UPD_SOUP_USED:
+                moveSoupToUsed(message);
         }
     }
 
@@ -201,6 +184,40 @@ public class Blockchain {
             case UNT_COW:
                 break;
         }
+    }
+
+    public static void updateRobotBuilt(int[] message) {
+        switch (message[3]) {
+            case UNT_MINER:
+                break;
+            case UNT_LANDSCAPER:
+                break;
+            case UNT_DDRONE:
+                break;
+            case BLD_HQ:
+                HqLocation = new MapLocation(message[4], message[5]);
+                break;
+            case BLD_REFINERY:
+                break;
+            case BLD_VAPORATOR:
+                break;
+            case BLD_DESIGNSCH:
+                break;
+            case BLD_FLMTCNTR:
+                break;
+            case BLD_NETGUN:
+                break;
+            case UNT_COW:
+                break;
+        }
+    }
+
+    public static void moveSoupToUsed(int[] message) {
+        MapLocation tmp = new MapLocation(message[3], message[4]);
+        if(soupLocs.contains(tmp))
+            soupLocs.remove(tmp);
+        if(!usedLocs.contains(tmp))
+            usedLocs.add(tmp);
     }
 
 

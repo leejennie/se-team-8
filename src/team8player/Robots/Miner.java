@@ -30,8 +30,6 @@ public class Miner extends Unit {
     }
 
 
-
-
     /**
      * Attempts to mine soup in a given direction.
      *
@@ -138,11 +136,27 @@ public class Miner extends Unit {
         }
 
         // check for nearby soupLocs
-        int maxSoupDistance = 100;
+        int maxSoupDistance = 10000;
         if(soupLocs != null) for(MapLocation loc: soupLocs) {
             if(rc.getLocation().distanceSquaredTo(loc) < maxSoupDistance) {
                 currentGoal = loc;
             }
+        }
+
+        // try to sense nearby soup and set it as the goal if there isn't already a soup goal
+        MapLocation soup[] = rc.senseNearbySoup();
+        if(currentGoal == null && soup.length > 0)
+            currentGoal = soup[0];
+        else if(soup.length > 0) {
+            boolean found = false;
+            for(int i = 0; i < soup.length; i++) {
+                if(soup[i] == currentGoal) {
+                    found = true;
+                    break;
+                }
+            }
+            if(!found)
+                currentGoal = soup[0];
         }
 
 
@@ -155,13 +169,14 @@ public class Miner extends Unit {
 
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
                 if (!soupLocs.contains(tmp)) {
-                    Blockchain.sendSoupLoc(tmp, 10);
+                    //soupLocs.add(tmp);
+                    //Blockchain.sendSoupLoc(tmp, 10);
                 }
             }
             // if couldn't mine and loc is in goals, notify it is used
             else {
                 if(!usedLocs.contains(tmp) && soupLocs.contains(tmp)) {
-                    Blockchain.sendStatusUpdate(UPD_SOUP_USED, new int[]{tmp.x, tmp.y}, 10);
+                    //Blockchain.sendStatusUpdate(UPD_SOUP_USED, new int[]{tmp.x, tmp.y}, 10);
                 }
             }
         }

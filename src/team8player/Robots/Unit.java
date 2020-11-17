@@ -47,7 +47,7 @@ public abstract class Unit implements PlayerBot {
      */
     static boolean tryMove(Direction dir) throws GameActionException {
         MapLocation tmp = rc.getLocation().add(dir);
-        System.out.printf("Trying to move to [%d] [%d]%n", tmp.x, tmp.y);
+        //System.out.printf("Trying to move to [%d] [%d]%n", tmp.x, tmp.y);
         if(rc.canSenseLocation(rc.getLocation().add(dir))) {
             if (rc.isReady() && rc.canMove(dir)) {
                 rc.move(dir);

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import org.mockito.Mock;
 
 public class DeliveryDroneTest {
 
@@ -20,8 +19,11 @@ public class DeliveryDroneTest {
     @Test
     public void testRun() throws GameActionException {
         DeliveryDrone dd = Mockito.mock(DeliveryDrone.class);
-        doNothing().when(dd).run();
-        verify(dd, times(1)).run();
+        dd.rc = Mockito.mock(RobotController.class);
+        if (dd.rc.getType() == RobotType.DELIVERY_DRONE) {
+            doNothing().when(dd).run();
+            verify(dd, times(1)).run();
+        }
         dd.run();
     }
 }

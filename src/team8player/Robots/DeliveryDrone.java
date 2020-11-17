@@ -1,15 +1,15 @@
 package team8player.Robots;
 
 import battlecode.common.*;
-import static team8player.Globals.*;
 
-public class DeliveryDrone extends  Unit {
+public class DeliveryDrone extends Unit {
 
     /**
      * Robot constructor
      * @return a random RobotType
      */
-    public DeliveryDrone() {
+    public DeliveryDrone(RobotController rc) {
+        super(rc);
     }
 
     @Override

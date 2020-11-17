@@ -4,6 +4,8 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import team8player.Globals;
+
 import static team8player.Globals.*;
 
 import java.util.LinkedList;
@@ -14,7 +16,8 @@ public class Landscaper extends Unit {
      * Robot constructor
      * @return a random RobotType
      */
-    public Landscaper() {
+    public Landscaper(RobotController rc) {
+        super(rc);
     }
 
     @Override

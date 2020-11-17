@@ -3,19 +3,22 @@ package team8player.Robots;
 import battlecode.common.*;
 import team8player.Blockchain;
 import static team8player.Globals.*;
+import team8player.*;
 
 import java.util.LinkedList;
 
 
 
-public abstract class Unit implements PlayerBot {
+public class Unit extends PlayerBot {
 
-    public Unit() {
+    public Unit(RobotController rc) {
+        super(rc);
     }
 
     static void findHQ() throws GameActionException {
         for (RobotInfo robot : nearbyBots) {
             if(robot.type == RobotType.HQ && robot.team != rc.getTeam()) {
+                Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
                 Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
             }
         }

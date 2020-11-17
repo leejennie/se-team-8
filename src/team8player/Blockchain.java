@@ -1,9 +1,7 @@
 package team8player;
 
 import battlecode.common.*;
-
 import static team8player.Globals.*;
-
 import java.util.*;
 
 public class Blockchain {

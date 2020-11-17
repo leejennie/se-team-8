@@ -25,33 +25,33 @@ public strictfp class RobotPlayer {
         // Create a robot with the Robot Controller
         switch (rType) {
             case MINER:
-                rbt = new Miner();
+                rbt = new Miner(rc);
                 break;
             case LANDSCAPER:
-                rbt = new Landscaper();
+                rbt = new Landscaper(rc);
                 break;
             case DELIVERY_DRONE:
-                rbt = new DeliveryDrone();
+                rbt = new DeliveryDrone(rc);
                 break;
             case HQ:
                 MapLocation loc = rc.getLocation();
                 Blockchain.sendStatusUpdate(UPD_RBT_BUILT, new int[]{BLD_HQ, loc.x, loc.y}, 10);
-                rbt = new HQ();
+                rbt = new HQ(rc);
                 break;
             case REFINERY:
-                rbt = new Refinery();
+                rbt = new Refinery(rc);
                 break;
             case VAPORATOR:
-                rbt = new Vaporator();
+                rbt = new Vaporator(rc);
                 break;
             case DESIGN_SCHOOL:
-                rbt = new DesignSchool();
+                rbt = new DesignSchool(rc);
                 break;
             case FULFILLMENT_CENTER:
-                rbt = new FulfillmentCenter();
+                rbt = new FulfillmentCenter(rc);
                 break;
             case NET_GUN:
-                rbt = new NetGun();
+                rbt = new NetGun(rc);
                 break;
         }
 

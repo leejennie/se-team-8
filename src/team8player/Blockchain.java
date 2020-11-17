@@ -140,6 +140,8 @@ public class Blockchain {
                 break;
             case UNT_COW:
                 break;
+            default:
+                break;
         }
     }
 
@@ -155,6 +157,8 @@ public class Blockchain {
                 updateRobotBuilt(message);
             case UPD_SOUP_USED:
                 moveSoupToUsed(message);
+            default:
+                break;
         }
     }
 
@@ -181,6 +185,8 @@ public class Blockchain {
                 break;
             case UNT_COW:
                 break;
+            default:
+                break;
         }
     }
 
@@ -206,6 +212,8 @@ public class Blockchain {
             case BLD_NETGUN:
                 break;
             case UNT_COW:
+                break;
+            default:
                 break;
         }
     }

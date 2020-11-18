@@ -18,8 +18,7 @@ public class Unit extends PlayerBot {
     static void findHQ() throws GameActionException {
         for (RobotInfo robot : nearbyBots) {
             if(robot.type == RobotType.HQ && robot.team != rc.getTeam()) {
-                Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
-                Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
+                Blockchain.sendMessage(MSG_ROBOT_LOCATON, new int[]{BLD_HQ, robot.location.x, robot.location.y}, 10);
             }
         }
     }
@@ -79,6 +78,7 @@ public class Unit extends PlayerBot {
         if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));
 
         // If nothing else to do, move in a random dir
-        tryMove();
+        if(!skipMovement)
+            tryMove();
     }
 }

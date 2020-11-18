@@ -10,14 +10,15 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class Miner extends Unit {
-    static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.DESIGN_SCHOOL, RobotType.FULFILLMENT_CENTER,
+    static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.FULFILLMENT_CENTER, RobotType.DESIGN_SCHOOL,
             RobotType.VAPORATOR, RobotType.NET_GUN};
 
     /**
      * Robot constructor
      * @return a Miner
      */
-    public Miner() {
+    public Miner(RobotController rc) {
+        super(rc);
     }
 
     /**
@@ -37,7 +38,7 @@ public class Miner extends Unit {
      * @return true if a move was performed
      * @throws GameActionException
      */
-    static boolean tryMine(Direction dir) throws GameActionException {
+    public static boolean tryMine(Direction dir) throws GameActionException {
         if (rc.isReady() && rc.canMineSoup(dir)) {
             rc.mineSoup(dir);
             return true;
@@ -52,7 +53,7 @@ public class Miner extends Unit {
      * @return true if a move was performed
      * @throws GameActionException
      */
-    static boolean tryDeposit(Direction dir) throws GameActionException {
+    public static boolean tryDeposit(Direction dir) throws GameActionException {
         if (rc.isReady() && rc.canDepositSoup(dir)) {
             rc.depositSoup(dir, 200);
             return true;
@@ -81,57 +82,55 @@ public class Miner extends Unit {
                 }
             }
         }
+
+        // If there are too
+
+
         // try to build based on the spawnFilter list
         int[] spawnFilter = {0, 0, 0, 0, 0};
-        for (RobotInfo rbt : nearbyBots) {
-            // if any of the bots are an enemy drone, try to build a net gun
-            if(rbt.type == RobotType.DELIVERY_DRONE && rbt.team != rc.getTeam())
-                for(int i = 0; i < 3; i++)
-                    spawnFilter[i]++;
-            switch(rbt.type) {
-                case HQ:
-                    spawnFilter[0]++;
-                case REFINERY:
-                    spawnFilter[0]++;
-                    break;
-                case DESIGN_SCHOOL:
-                    spawnFilter[1]++;
-                    break;
-                case FULFILLMENT_CENTER:
-                    spawnFilter[2]++;
-                    break;
-                case VAPORATOR:
-                    spawnFilter[3]++;
-                    break;
-                case NET_GUN:
-                    spawnFilter[4]++;
-
-            }
-        }
         // Conditions to skip to certain buildings
         // if there's more than twice as many refineries as designSchools, don't build more refineries
-        if(refineries.size() > designSchools.size() * 2 || (refineries.size() > 0 && designSchools.size() == 0))
+        if(refineries.size() > fulCenters.size() * 2) // || (refineries.size() > 0 && designSchools.size() == 0)) --changed this just to get more things to spawn
             spawnFilter[0]++;
-        // if there's more design schools than fulfillment centers, don't build design schools
-        if(designSchools.size() > fulCenters.size())
+        // if there's more fulfillment centers than design schools, don't build fulfillment centers
+        if(fulCenters.size() > designSchools.size() )
             spawnFilter[1]++;
         // if the current location is above a pollution threshold, prioritize a vaporator
-        if(rc.sensePollution(rc.getLocation()) > 20) {
+        if(rc.sensePollution(rc.getLocation()) > 2000) {
             spawnFilter[0]++;
             spawnFilter[1]++;
+            spawnFilter[2]++;
+        }
+        // if the enemy HQ location isn't known, skip design schools
+        if(enemyHqLocation == null) {
+            spawnFilter[2]++;
+        }
+        int buildingDistanceThreshold = 200;
+        for(MapLocation bld: refineries) {
+            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+                spawnFilter[0]++;
+        }
+        for(MapLocation bld: fulCenters) {
+            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+                spawnFilter[1]++;
+        }
+        for(MapLocation bld: designSchools) {
+            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+                spawnFilter[2]++;
+        }
+        for(MapLocation bld: vaporators) {
+            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+                spawnFilter[3]++;
+        }
+        for(MapLocation bld: netGuns) {
+            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+                spawnFilter[4]++;
         }
         for(int i = 0; i < spawnFilter.length; i++) {
             if (spawnFilter[i] < 1) {
-                for (Direction dir : Direction.allDirections()) {
-                    if (PlayerBot.tryBuild(spawnList[i], dir)) {
-                        MapLocation loc = rc.getLocation().add(dir);
-                        Blockchain.sendStatusUpdate(MSG_STATUS_UPDATE,
-                                new int[]{UPD_RBT_BUILT, BLD_DESIGNSCH,
-                                        loc.x, loc.y},
-                                10);
-                    }
+                if(PlayerBot.tryBuild(spawnList[i])) {
+                    System.out.println("Built a thing");
                 }
-                break; //break out of loop because if one building could not be build, none of them can
             }
         }
 
@@ -161,6 +160,7 @@ public class Miner extends Unit {
 
 
         // try to mine
+        skipMovement = false;
         for (Direction dir : Direction.allDirections()) {
             MapLocation tmp = rc.getLocation().add(dir);
             if (tryMine(dir)) {
@@ -168,17 +168,19 @@ public class Miner extends Unit {
 
 
                 System.out.println("I mined soup! " + rc.getSoupCarrying());
-                if (!soupLocs.contains(tmp)) {
+                skipMovement = true;
+                //if (!soupLocs.contains(tmp)) {
                     //soupLocs.add(tmp);
                     //Blockchain.sendSoupLoc(tmp, 10);
-                }
+                //}
+                break;
             }
             // if couldn't mine and loc is in goals, notify it is used
-            else {
-                if(!usedLocs.contains(tmp) && soupLocs.contains(tmp)) {
+            //else {
+                //if(!usedLocs.contains(tmp) && soupLocs.contains(tmp)) {
                     //Blockchain.sendStatusUpdate(UPD_SOUP_USED, new int[]{tmp.x, tmp.y}, 10);
-                }
-            }
+                //}
+            //}
         }
 
         endTurn();

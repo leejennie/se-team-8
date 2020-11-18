@@ -4,6 +4,8 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
+import team8player.Globals;
+
 import static team8player.Globals.*;
 
 public class FulfillmentCenter extends Building {
@@ -13,7 +15,8 @@ public class FulfillmentCenter extends Building {
      * @param rc the controller associated with this robot
      * @return a random RobotType
      */
-    public FulfillmentCenter() {
+    public FulfillmentCenter(RobotController rc) {
+        super(rc);
     }
 
     @Override

@@ -4,6 +4,8 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
+import team8player.Globals;
+
 import static team8player.Globals.*;
 
 public class DesignSchool extends Building {
@@ -12,7 +14,8 @@ public class DesignSchool extends Building {
      * Robot constructor
      * @return a random RobotType
      */
-    public DesignSchool() throws GameActionException {
+    public DesignSchool(RobotController rc) throws GameActionException {
+        super(rc);
     }
 
     @Override

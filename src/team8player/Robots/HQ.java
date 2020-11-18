@@ -1,6 +1,7 @@
 package team8player.Robots;
 
 import battlecode.common.*;
+import team8player.Globals;
 
 import static team8player.Globals.*;
 
@@ -10,7 +11,8 @@ public class HQ extends Building {
      * Robot constructor
      * @return a HQ building
      */
-    public HQ() {
+    public HQ(RobotController rc) {
+        super(rc);
     }
 
     @Override

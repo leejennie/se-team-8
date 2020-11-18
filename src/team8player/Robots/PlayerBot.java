@@ -1,15 +1,19 @@
 package team8player.Robots;
 
 import battlecode.common.*;
+import jdk.nashorn.internal.objects.Global;
 import team8player.Blockchain;
-
+import team8player.Globals;
+import team8player.RobotPlayer;
 import java.util.Map;
 
-import static team8player.Globals.*;
+public class PlayerBot {
 
+    public static RobotController rc;
 
-public interface PlayerBot {
-
+    public PlayerBot(RobotController rc) {
+        this.rc = rc;
+    }
     /**
      * Returns a random Direction.
      *
@@ -32,9 +36,10 @@ public interface PlayerBot {
         if (rc.isReady() && rc.canBuildRobot(type, dir)) {
             rc.buildRobot(type, dir);
             return true;
-        } else return false;
+        }
+        else return false;
     }
 
     // Creating abstract methods for polymorphism
-    void run() throws GameActionException;
+    public void run() throws GameActionException {};
 }

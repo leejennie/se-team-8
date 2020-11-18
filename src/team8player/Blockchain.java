@@ -1,9 +1,7 @@
 package team8player;
 
 import battlecode.common.*;
-
 import static team8player.Globals.*;
-
 import java.util.*;
 
 public class Blockchain {
@@ -40,6 +38,7 @@ public class Blockchain {
 
     // Message senders  *** removing hostility since this will only be used to sent the location of enemies
     public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
+
         int[] message = new int[txLength];
         message[0] = teamCode;
         message[1] = MSG_ROBOT_LOCATON;
@@ -76,6 +75,7 @@ public class Blockchain {
                     txCost);
         }
     }
+
     // Made as a pseudo template for future types of messages.
     public static void sendStatusUpdate(int updateType, int[] values, int txCost) throws GameActionException {
         int[] message = new int[txLength];

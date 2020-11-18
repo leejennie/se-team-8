@@ -83,8 +83,8 @@ public class Miner extends Unit {
             }
         }
 
-        // If there are too many miners nearby, move away
-        int x = rc.getLocation().x;
+        // If there are too many miners nearby, move away -- removed because it wasn't working
+        /*int x = rc.getLocation().x;
         int y = rc.getLocation().y;
         int count = 0;
         for(RobotInfo rbt: nearbyBots) {
@@ -105,7 +105,7 @@ public class Miner extends Unit {
             dirTurnsLeft = 15;
             while(rc.isReady())
                 tryMove(currDirection);
-        }
+        }*/
 
         // try to build based on the spawnFilter list
         int[] spawnFilter = {0, 0, 0, 0, 0};
@@ -128,7 +128,7 @@ public class Miner extends Unit {
         }
         // if the enemy HQ location isn't known, skip design schools
         //if(enemyHqLocation == null) { spawnFilter[2]++; }
-        int buildingDistanceThreshold = 0;
+        int buildingDistanceThreshold = 10;
         for(MapLocation bld: refineries) {
             if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
                 spawnFilter[0]++;
@@ -159,7 +159,6 @@ public class Miner extends Unit {
         for(int i = 0; i < spawnFilter.length; i++) {
             if (spawnFilter[i] < 1) {
                 tryBuild(spawnList[i]);
-                //tryBuild(RobotType.REFINERY);
             }
         }
 
@@ -193,23 +192,9 @@ public class Miner extends Unit {
         for (Direction dir : Direction.allDirections()) {
             MapLocation tmp = rc.getLocation().add(dir);
             if (tryMine(dir)) {
-                // Check if this is the first time mining here
-
-
-                //System.out.println("I mined soup! " + rc.getSoupCarrying());
                 skipMovement = true;
-                //if (!soupLocs.contains(tmp)) {
-                    //soupLocs.add(tmp);
-                    //Blockchain.sendSoupLoc(tmp, 10);
-                //}
                 break;
             }
-            // if couldn't mine and loc is in goals, notify it is used
-            //else {
-                //if(!usedLocs.contains(tmp) && soupLocs.contains(tmp)) {
-                    //Blockchain.sendStatusUpdate(UPD_SOUP_USED, new int[]{tmp.x, tmp.y}, 10);
-                //}
-            //}
         }
 
         endTurn();

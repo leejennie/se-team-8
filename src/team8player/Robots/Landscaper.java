@@ -14,7 +14,8 @@ public class Landscaper extends Unit {
      * Robot constructor
      * @return a random RobotType
      */
-    public Landscaper() {
+    public Landscaper(RobotController rc) {
+        super(rc);
     }
 
     @Override

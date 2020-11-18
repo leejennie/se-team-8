@@ -16,7 +16,7 @@ public class Blockchain {
             for(Transaction t : rc.getBlock(i)) {
                 int[] message = t.getMessage();
                 for(int j = 0; j < txLength; j++) {
-                    if(msgFilter[j] != -1 && msgFilter[j] == message[j]) {
+                    if(msgFilter[j] == -1 || msgFilter[j] == message[j]) {
                         if(j == txLength - 1) {
                             //System.out.printf("I received a %s message from the Blockchain!%n",
                                     //getMTDescFromId(msgFilter[1]));
@@ -24,6 +24,9 @@ public class Blockchain {
                             count++;
                             if(count == n) { return result;}
                         }
+                    }
+                    else {
+                        break;
                     }
                 }
             }
@@ -120,7 +123,7 @@ public class Blockchain {
     }
 
     public static void parseRobotLoc(int[] message) {
-        switch(message[2]) {
+        switch(message[3]) {
             case UNT_MINER:
                 break;
             case UNT_LANDSCAPER:

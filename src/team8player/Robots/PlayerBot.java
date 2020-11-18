@@ -56,7 +56,6 @@ public abstract class PlayerBot {
     }
 
     /**
-
      * Attempts to build a given robot in a given direction.
      *
      * @param type The type of the robot to build

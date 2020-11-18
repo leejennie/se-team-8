@@ -83,8 +83,23 @@ public class Miner extends Unit {
             }
         }
 
-        // If there are too
-
+        // If there are too many miners nearby, move away
+        int x = rc.getLocation().x;
+        int y = rc.getLocation().y;
+        int count = 0;
+        for(RobotInfo rbt: nearbyBots) {
+            if(rbt.type == RobotType.MINER) {
+                x = (rbt.location.x + x) / 2;
+                y = (rbt.location.y + y) / 2;
+                count++;
+            }
+        }
+        if(count > 1) {
+            MapLocation avg = new MapLocation(x, y);
+            currDirection = rc.getLocation().directionTo(avg).opposite();
+            dirTurnsLeft = 15;
+            tryMove(currDirection);
+        }
 
         // try to build based on the spawnFilter list
         int[] spawnFilter = {0, 0, 0, 0, 0};
@@ -96,7 +111,7 @@ public class Miner extends Unit {
         if(fulCenters.size() > designSchools.size() )
             spawnFilter[1]++;
         // if the current location is above a pollution threshold, prioritize a vaporator
-        if(rc.sensePollution(rc.getLocation()) > 2000) {
+        if(rc.sensePollution(rc.getLocation()) > 200) {
             spawnFilter[0]++;
             spawnFilter[1]++;
             spawnFilter[2]++;
@@ -105,7 +120,7 @@ public class Miner extends Unit {
         if(enemyHqLocation == null) {
             spawnFilter[2]++;
         }
-        int buildingDistanceThreshold = 200;
+        int buildingDistanceThreshold = 49;
         for(MapLocation bld: refineries) {
             if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
                 spawnFilter[0]++;
@@ -126,16 +141,15 @@ public class Miner extends Unit {
             if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
                 spawnFilter[4]++;
         }
+        // Try to build
         for(int i = 0; i < spawnFilter.length; i++) {
             if (spawnFilter[i] < 1) {
-                if(PlayerBot.tryBuild(spawnList[i])) {
-                    System.out.println("Built a thing");
-                }
+                tryBuild(spawnList[i]);
             }
         }
 
         // check for nearby soupLocs
-        int maxSoupDistance = 10000;
+        int maxSoupDistance = 10;
         if(soupLocs != null) for(MapLocation loc: soupLocs) {
             if(rc.getLocation().distanceSquaredTo(loc) < maxSoupDistance) {
                 currentGoal = loc;

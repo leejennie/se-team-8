@@ -62,7 +62,7 @@ public class Landscaper extends Unit {
      * @return true if it dug
      * @throws GameActionException
      */
-    static boolean tryDig(Direction dir) throws GameActionException {
+    public static boolean tryDig(Direction dir) throws GameActionException {
         if (rc.canDigDirt(dir)) {
             rc.digDirt(dir);
             return true;
@@ -77,7 +77,7 @@ public class Landscaper extends Unit {
      * @return true if deposited
      * @throws GameActionException
      */
-    static boolean tryDepositDirt(Direction dir) throws GameActionException {
+    public static boolean tryDepositDirt(Direction dir) throws GameActionException {
         if(rc.canDepositDirt(dir)) {
             rc.depositDirt(dir);
             return true;

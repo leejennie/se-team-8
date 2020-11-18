@@ -13,6 +13,13 @@ import static org.mockito.Mockito.*;
 public class MinerTest {
 
     @Test
+    public void testMinerCreation() {
+        Miner m1 = Mockito.mock(Miner.class);
+        Miner m2 = Mockito.mock(Miner.class);
+        assertNotEquals(m1, m2);
+    }
+
+    @Test
     public void testTryMine() throws GameActionException {
         Miner m1 = Mockito.mock(Miner.class);
         m1.rc = Mockito.mock(RobotController.class);
@@ -34,7 +41,7 @@ public class MinerTest {
         m1.tryDeposit(Direction.SOUTH);
     }
 
-    @Test
+    @Test // Need to fix this
     public void testRun() throws GameActionException {
         Miner m1 = Mockito.mock(Miner.class);
         m1.rc = Mockito.mock(RobotController.class);

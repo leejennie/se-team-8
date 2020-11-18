@@ -21,7 +21,7 @@ public class FulfillmentCenter extends Building {
     public void run() throws GameActionException {
         super.run();
 
-        if(numDrones < refineries.size() + 1) { // don't spawn more Drones than there are refineries
+        if(numDrones < refineries.size()) { // don't spawn more Drones than there are refineries
             tryBuild(RobotType.DELIVERY_DRONE);
         }
     }

@@ -54,7 +54,6 @@ public class Unit extends PlayerBot {
             if (rc.isReady() && rc.canMove(dir)) {
                 rc.move(dir);
                 return true;
-
             }
         }
         return false;

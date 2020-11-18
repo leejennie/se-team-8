@@ -71,7 +71,7 @@ public abstract class PlayerBot {
                 MapLocation check = loc.add(tmpDir);
                 for(RobotInfo rbt: nearbyBots) {
                     if(rbt.location.equals(check) && !isUnit(rbt.type)) {
-                        System.out.println("Skipped building adjacent to another building.");
+                        //System.out.println("Skipped building adjacent to another building.");
                         return false;
                     }
                 }
@@ -82,6 +82,7 @@ public abstract class PlayerBot {
             rc.buildRobot(type, dir);
             Blockchain.sendMessage(MSG_RBT_BUILT, new int[]{robotToInt(type), loc.x, loc.y}, 10);
             incrementBuiltType(type, loc);
+            System.out.printf("I just built a %s!%n", type.toString());
             return true;
         }
         else return false;

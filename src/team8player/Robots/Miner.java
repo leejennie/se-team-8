@@ -94,33 +94,41 @@ public class Miner extends Unit {
                 count++;
             }
         }
-        if(count > 1) {
+        if(count > 2) {
             MapLocation avg = new MapLocation(x, y);
             currDirection = rc.getLocation().directionTo(avg).opposite();
+            // make sure it doesn't get stuck in a loop in place
+            if(currDirection == Direction.CENTER) {
+                currDirection = Direction.cardinalDirections()[(int)(Math.random() *
+                        Direction.cardinalDirections().length)];
+            }
             dirTurnsLeft = 15;
-            tryMove(currDirection);
+            while(rc.isReady())
+                tryMove(currDirection);
         }
 
         // try to build based on the spawnFilter list
         int[] spawnFilter = {0, 0, 0, 0, 0};
         // Conditions to skip to certain buildings
         // if there's more than twice as many refineries as designSchools, don't build more refineries
-        if(refineries.size() > fulCenters.size() * 2) // || (refineries.size() > 0 && designSchools.size() == 0)) --changed this just to get more things to spawn
+        if(refineries.size() > fulCenters.size() + 1) // || (refineries.size() > 0 && designSchools.size() == 0)) --changed this just to get more things to spawn
             spawnFilter[0]++;
         // if there's more fulfillment centers than design schools, don't build fulfillment centers
-        if(fulCenters.size() > designSchools.size() )
+        if(fulCenters.size() > designSchools.size())
             spawnFilter[1]++;
+        if(designSchools.size() > vaporators.size())
+            spawnFilter[2]++;
+        if(vaporators.size() > netGuns.size())
+            spawnFilter[3]++;
         // if the current location is above a pollution threshold, prioritize a vaporator
-        if(rc.sensePollution(rc.getLocation()) > 200) {
+        if(rc.sensePollution(rc.getLocation()) > 20) {
             spawnFilter[0]++;
             spawnFilter[1]++;
             spawnFilter[2]++;
         }
         // if the enemy HQ location isn't known, skip design schools
-        if(enemyHqLocation == null) {
-            spawnFilter[2]++;
-        }
-        int buildingDistanceThreshold = 49;
+        //if(enemyHqLocation == null) { spawnFilter[2]++; }
+        int buildingDistanceThreshold = 0;
         for(MapLocation bld: refineries) {
             if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
                 spawnFilter[0]++;
@@ -141,15 +149,22 @@ public class Miner extends Unit {
             if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
                 spawnFilter[4]++;
         }
+
         // Try to build
+        for(RobotInfo rbt: nearbyBots) {
+            if(rbt.type == RobotType.DELIVERY_DRONE && rbt.team != rc.getTeam())
+                tryBuild(RobotType.NET_GUN);
+        }
+        spawnFilter[0] = 0;
         for(int i = 0; i < spawnFilter.length; i++) {
             if (spawnFilter[i] < 1) {
                 tryBuild(spawnList[i]);
+                //tryBuild(RobotType.REFINERY);
             }
         }
 
         // check for nearby soupLocs
-        int maxSoupDistance = 10;
+        int maxSoupDistance = 5;
         if(soupLocs != null) for(MapLocation loc: soupLocs) {
             if(rc.getLocation().distanceSquaredTo(loc) < maxSoupDistance) {
                 currentGoal = loc;
@@ -159,7 +174,7 @@ public class Miner extends Unit {
         // try to sense nearby soup and set it as the goal if there isn't already a soup goal
         MapLocation soup[] = rc.senseNearbySoup();
         if(currentGoal == null && soup.length > 0)
-            currentGoal = soup[0];
+            currentGoal = soup[(int)(Math.random() * soup.length)];
         else if(soup.length > 0) {
             boolean found = false;
             for(int i = 0; i < soup.length; i++) {
@@ -169,7 +184,7 @@ public class Miner extends Unit {
                 }
             }
             if(!found)
-                currentGoal = soup[0];
+                currentGoal = soup[(int)(Math.random() * soup.length)];
         }
 
 
@@ -181,7 +196,7 @@ public class Miner extends Unit {
                 // Check if this is the first time mining here
 
 
-                System.out.println("I mined soup! " + rc.getSoupCarrying());
+                //System.out.println("I mined soup! " + rc.getSoupCarrying());
                 skipMovement = true;
                 //if (!soupLocs.contains(tmp)) {
                     //soupLocs.add(tmp);

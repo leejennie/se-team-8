@@ -195,6 +195,7 @@ public class Blockchain {
     }
 
     public static void updateRobotBuilt(int[] message) {
+        MapLocation loc = new MapLocation(message[4], message[5]);
         switch (message[3]) {
             case UNT_MINER:
                 numMiners++;
@@ -206,22 +207,29 @@ public class Blockchain {
                 numDrones++;
                 break;
             case BLD_HQ:
-                HqLocation = new MapLocation(message[4], message[5]);
+                HqLocation = loc;
+                if(!refineries.contains(loc))
+                    refineries.add(loc);
                 break;
             case BLD_REFINERY:
-                refineries.add(new MapLocation(message[4], message[5]));
+                if(!refineries.contains(loc))
+                    refineries.add(loc);
                 break;
             case BLD_VAPORATOR:
-                vaporators.add(new MapLocation(message[4], message[5]));
+                if(!vaporators.contains(loc))
+                    vaporators.add(loc);
                 break;
             case BLD_DESIGNSCH:
-                designSchools.add(new MapLocation(message[4], message[5]));
+                if(!designSchools.contains(loc))
+                    designSchools.add(loc);
                 break;
             case BLD_FLMTCNTR:
-                fulCenters.add(new MapLocation(message[4], message[5]));
+                if(!fulCenters.contains(loc))
+                    fulCenters.add(loc);
                 break;
             case BLD_NETGUN:
-                netGuns.add(new MapLocation(message[4], message[5]));
+                if(!netGuns.contains(loc))
+                    netGuns.add(loc);
                 break;
             case UNT_COW:
                 break;

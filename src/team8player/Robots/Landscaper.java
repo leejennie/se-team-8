@@ -28,14 +28,14 @@ public class Landscaper extends Unit {
         if (currDirt == 0) {
             Direction dir = PlayerBot.randomDirection();
             if (tryDig(dir)) {
-                System.out.println("I dug in the " + dir + " direction.");
+                //System.out.println("I dug in the " + dir + " direction.");
                 return;
             }
         }
         else if (currDirt == 25) {
             Direction dir = PlayerBot.randomDirection();
             if (tryDepositDirt(dir)) {
-                System.out.println("I deposited dirt in the " + dir + " direction.");
+                //System.out.println("I deposited dirt in the " + dir + " direction.");
                 return;
             }
         }
@@ -43,12 +43,12 @@ public class Landscaper extends Unit {
         else {
             for (Direction dir : Direction.allDirections())
                 if (tryDig(dir)) {
-                    System.out.println("I dug in the " + dir + " direction.");
+                    //System.out.println("I dug in the " + dir + " direction.");
                     return;
                 }
             for (Direction dir : Direction.allDirections())
                 if (tryDepositDirt(dir)){
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
+                    //System.out.println("I deposited dirt in the " + dir + " direction.");
                     return;
                 }
         }

@@ -1,9 +1,6 @@
 package team8player;
 
-import battlecode.common.Direction;
-import battlecode.common.MapLocation;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
+import battlecode.common.*;
 import com.sun.tools.javac.code.Type;
 
 import java.util.LinkedList;
@@ -17,21 +14,25 @@ public class Globals {
     public static LinkedList<MapLocation> soupLocs = new LinkedList<>();
     public static LinkedList<MapLocation> usedLocs = new LinkedList<>();
     public static LinkedList<MapLocation> refineries = new LinkedList<>();
+    public static LinkedList<MapLocation> vaporators = new LinkedList<>();
     public static LinkedList<MapLocation> designSchools = new LinkedList<>();
     public static LinkedList<MapLocation> fulCenters = new LinkedList<>();
+    public static LinkedList<MapLocation> netGuns = new LinkedList<>();
     public static Direction currDirection = Direction.values()[(int) (Math.random() * Direction.values().length)];
     public static int dirTurnsLeft = 0;
     public static RobotInfo[] nearbyBots;
     public static int turnCount;
     public static int numMiners = 0;
-    public static int numDrones = 0;
     public static int numLandscapers = 0;
+    public static int numDrones = 0;
     public static int lastAction = -1; // so we can know when a bot is doing something different on their current turn
     public static RobotController rc;
     public static int txLength = 7; //added because trying to use the provided one was causing issues
     public static int lastTurnUpdatedFromBC = 1;
+    public static boolean skipMovement = false;
 
     public static final int teamCode = 2662718; // Randomly generated number for id
+    public static final int selfID = (int)(Math.random() * 9999999);
 
     // todo create alternate sabotage method that just takes the average of each
     // index of all messages that aren't ours and uses that as the trash message to send out
@@ -42,14 +43,9 @@ public class Globals {
     // Message type IDs
     public static final int MSG_ROBOT_LOCATON   = 0;
     public static final int MSG_SOUP_LOCATION   = 1;
-    public static final int MSG_STATUS_UPDATE   = 2;
-
-    // Status Update type IDs
-    public static final int UPD_ROBOT_LOCATION  = 0;
-    public static final int UPD_SOUP_LOCATION   = 1;
-    public static final int UPD_COW_LOCATION    = 2;
-    public static final int UPD_RBT_BUILT       = 3;
-    public static final int UPD_SOUP_USED       = 4;
+    public static final int MSG_COW_LOCATION    = 2;
+    public static final int MSG_RBT_BUILT       = 3;
+    public static final int MSG_SOUP_USED       = 4;
 
     // Hostility
     public static final int HOS_ALLY            = 0;
@@ -70,32 +66,32 @@ public class Globals {
     public static final int UNT_COW             = 9;
 
     // Other various globals
-    public static final int MAX_TURNS_DIR       = 5;
+    public static final int MAX_TURNS_DIR       = 30;
 
 
 
     // Helper functions
-    public static int robotToInt(String rType) {
+    public static int robotToInt(RobotType rType) {
         switch (rType) {
-            case "MINER":
+            case MINER:
                 return UNT_MINER;
-            case "LANDSCAPER":
+            case LANDSCAPER:
                 return UNT_LANDSCAPER;
-            case "DELIVERYDRONE":
+            case DELIVERY_DRONE:
                 return UNT_DDRONE;
-            case "HQ":
+            case HQ:
                 return BLD_HQ;
-            case "REFINERY":
+            case REFINERY:
                 return BLD_REFINERY;
-            case "VAPORATOR":
+            case VAPORATOR:
                 return BLD_VAPORATOR;
-            case "DESIGNSCHOOL":
+            case DESIGN_SCHOOL:
                 return BLD_DESIGNSCH;
-            case "FILFILLMENTCENTER":
+            case FULFILLMENT_CENTER:
                 return BLD_FLMTCNTR;
-            case "NETGUN":
+            case NET_GUN:
                 return BLD_NETGUN;
-            case "COW":
+            case COW:
                 return UNT_COW;
         }
         return -1;
@@ -132,18 +128,24 @@ public class Globals {
         return "enemy";
     }
 
-    public static String getUpdateType(int id) {
+    public static String getMessageType(int id) {
         switch (id) {
-            case UPD_ROBOT_LOCATION:
+            case MSG_ROBOT_LOCATON:
                 return "Robot Location";
-            case UPD_SOUP_LOCATION:
+            case MSG_SOUP_LOCATION:
                 return "Soup Location";
-            case UPD_COW_LOCATION:
+            case MSG_COW_LOCATION:
                 return "Cow Location";
-            case UPD_RBT_BUILT:
+            case MSG_RBT_BUILT:
                 return "Robot Built";
         }
         return "!?!?";
     }
 
+    public static boolean isUnit(RobotType type) {
+        if(type == RobotType.MINER || type == RobotType.DELIVERY_DRONE ||
+                type == RobotType.LANDSCAPER || type == RobotType.COW)
+            return true;
+        return false;
+    }
 }

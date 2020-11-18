@@ -5,6 +5,7 @@ import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
+import team8player.Globals;
 
 import static team8player.Globals.*;
 
@@ -14,7 +15,8 @@ public class NetGun extends Unit {
      * Robot constructor
      * @return a random RobotType
      */
-    public NetGun() {
+    public NetGun(RobotController rc) {
+        super(rc);
     }
 
     @Override

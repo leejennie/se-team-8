@@ -1,0 +1,341 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: RobotPlayer</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">examplefuncsplayer</a> ]
+</div>
+
+<h1>Coverage Summary for Class: RobotPlayer (examplefuncsplayer)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RobotPlayer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 75)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">RobotPlayer$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 76)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package examplefuncsplayer;
+<i>2</i>&nbsp;import battlecode.common.*;
+<i>3</i>&nbsp;
+<b class="nc"><i>4</i>&nbsp;public strictfp class RobotPlayer {</b>
+<i>5</i>&nbsp;    static RobotController rc;
+<i>6</i>&nbsp;
+<b class="nc"><i>7</i>&nbsp;    static Direction[] directions = {</b>
+<i>8</i>&nbsp;            Direction.NORTH,
+<i>9</i>&nbsp;            Direction.NORTHEAST,
+<i>10</i>&nbsp;            Direction.EAST,
+<i>11</i>&nbsp;            Direction.SOUTHEAST,
+<i>12</i>&nbsp;            Direction.SOUTH,
+<i>13</i>&nbsp;            Direction.SOUTHWEST,
+<i>14</i>&nbsp;            Direction.WEST,
+<i>15</i>&nbsp;            Direction.NORTHWEST
+<i>16</i>&nbsp;    };
+<b class="nc"><i>17</i>&nbsp;    static RobotType[] spawnedByMiner = {RobotType.REFINERY, RobotType.VAPORATOR, RobotType.DESIGN_SCHOOL,</b>
+<i>18</i>&nbsp;            RobotType.FULFILLMENT_CENTER, RobotType.NET_GUN};
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    static int turnCount;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    /**
+<i>23</i>&nbsp;     * run() is the method that is called when a robot is instantiated in the Battlecode world.
+<i>24</i>&nbsp;     * If this method returns, the robot dies!
+<i>25</i>&nbsp;     **/
+<i>26</i>&nbsp;    @SuppressWarnings(&quot;unused&quot;)
+<i>27</i>&nbsp;    public static void run(RobotController rc) throws GameActionException {
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;        // This is the RobotController object. You use it to perform actions from this robot,
+<i>30</i>&nbsp;        // and to get information on its current status.
+<b class="nc"><i>31</i>&nbsp;        RobotPlayer.rc = rc;</b>
+<i>32</i>&nbsp;
+<b class="nc"><i>33</i>&nbsp;        turnCount = 0;</b>
+<i>34</i>&nbsp;
+<b class="nc"><i>35</i>&nbsp;        System.out.println(&quot;I&#39;m a &quot; + rc.getType() + &quot; and I just got created!&quot;);</b>
+<i>36</i>&nbsp;        while (true) {
+<b class="nc"><i>37</i>&nbsp;            turnCount += 1;</b>
+<i>38</i>&nbsp;            // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
+<i>39</i>&nbsp;            try {
+<i>40</i>&nbsp;                // Here, we&#39;ve separated the controls into a different method for each RobotType.
+<i>41</i>&nbsp;                // You can add the missing ones or rewrite this into your own control structure.
+<b class="nc"><i>42</i>&nbsp;                System.out.println(&quot;I&#39;m a &quot; + rc.getType() + &quot;! Location &quot; + rc.getLocation());</b>
+<b class="nc"><i>43</i>&nbsp;                switch (rc.getType()) {</b>
+<b class="nc"><i>44</i>&nbsp;                    case HQ:                 runHQ();                break;</b>
+<b class="nc"><i>45</i>&nbsp;                    case MINER:              runMiner();             break;</b>
+<b class="nc"><i>46</i>&nbsp;                    case REFINERY:           runRefinery();          break;</b>
+<b class="nc"><i>47</i>&nbsp;                    case VAPORATOR:          runVaporator();         break;</b>
+<b class="nc"><i>48</i>&nbsp;                    case DESIGN_SCHOOL:      runDesignSchool();      break;</b>
+<b class="nc"><i>49</i>&nbsp;                    case FULFILLMENT_CENTER: runFulfillmentCenter(); break;</b>
+<b class="nc"><i>50</i>&nbsp;                    case LANDSCAPER:         runLandscaper();        break;</b>
+<b class="nc"><i>51</i>&nbsp;                    case DELIVERY_DRONE:     runDeliveryDrone();     break;</b>
+<b class="nc"><i>52</i>&nbsp;                    case NET_GUN:            runNetGun();            break;</b>
+<i>53</i>&nbsp;                }
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;                // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
+<b class="nc"><i>56</i>&nbsp;                Clock.yield();</b>
+<i>57</i>&nbsp;
+<b class="nc"><i>58</i>&nbsp;            } catch (Exception e) {</b>
+<b class="nc"><i>59</i>&nbsp;                System.out.println(rc.getType() + &quot; Exception&quot;);</b>
+<b class="nc"><i>60</i>&nbsp;                e.printStackTrace();</b>
+<b class="nc"><i>61</i>&nbsp;            }</b>
+<i>62</i>&nbsp;        }
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    static void runHQ() throws GameActionException {
+<b class="nc"><i>66</i>&nbsp;        for (Direction dir : directions)</b>
+<b class="nc"><i>67</i>&nbsp;            tryBuild(RobotType.MINER, dir);</b>
+<i>68</i>&nbsp;    }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;    static void runMiner() throws GameActionException {
+<b class="nc"><i>71</i>&nbsp;        tryBlockchain();</b>
+<b class="nc"><i>72</i>&nbsp;        tryMove(randomDirection());</b>
+<b class="nc"><i>73</i>&nbsp;        if (tryMove(randomDirection()))</b>
+<b class="nc"><i>74</i>&nbsp;            System.out.println(&quot;I moved!&quot;);</b>
+<i>75</i>&nbsp;        // tryBuild(randomSpawnedByMiner(), randomDirection());
+<b class="nc"><i>76</i>&nbsp;        for (Direction dir : directions)</b>
+<b class="nc"><i>77</i>&nbsp;            tryBuild(RobotType.FULFILLMENT_CENTER, dir);</b>
+<b class="nc"><i>78</i>&nbsp;        for (Direction dir : directions)</b>
+<b class="nc"><i>79</i>&nbsp;            if (tryRefine(dir))</b>
+<b class="nc"><i>80</i>&nbsp;                System.out.println(&quot;I refined soup! &quot; + rc.getTeamSoup());</b>
+<b class="nc"><i>81</i>&nbsp;        for (Direction dir : directions)</b>
+<b class="nc"><i>82</i>&nbsp;            if (tryMine(dir))</b>
+<b class="nc"><i>83</i>&nbsp;                System.out.println(&quot;I mined soup! &quot; + rc.getSoupCarrying());</b>
+<i>84</i>&nbsp;    }
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    static void runRefinery() throws GameActionException {
+<i>87</i>&nbsp;        // System.out.println(&quot;Pollution: &quot; + rc.sensePollution(rc.getLocation()));
+<i>88</i>&nbsp;    }
+<i>89</i>&nbsp;
+<i>90</i>&nbsp;    static void runVaporator() throws GameActionException {
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    }
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;    static void runDesignSchool() throws GameActionException {
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;    static void runFulfillmentCenter() throws GameActionException {
+<b class="nc"><i>99</i>&nbsp;        for (Direction dir : directions)</b>
+<b class="nc"><i>100</i>&nbsp;            tryBuild(RobotType.DELIVERY_DRONE, dir);</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    static void runLandscaper() throws GameActionException {
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;    }
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    static void runDeliveryDrone() throws GameActionException {
+<b class="nc"><i>108</i>&nbsp;        Team enemy = rc.getTeam().opponent();</b>
+<b class="nc"><i>109</i>&nbsp;        if (!rc.isCurrentlyHoldingUnit()) {</b>
+<i>110</i>&nbsp;            // See if there are any enemy robots within capturing range
+<b class="nc"><i>111</i>&nbsp;            RobotInfo[] robots = rc.senseNearbyRobots(GameConstants.DELIVERY_DRONE_PICKUP_RADIUS_SQUARED, enemy);</b>
+<i>112</i>&nbsp;
+<b class="nc"><i>113</i>&nbsp;            if (robots.length &gt; 0) {</b>
+<i>114</i>&nbsp;                // Pick up a first robot within range
+<b class="nc"><i>115</i>&nbsp;                rc.pickUpUnit(robots[0].getID());</b>
+<b class="nc"><i>116</i>&nbsp;                System.out.println(&quot;I picked up &quot; + robots[0].getID() + &quot;!&quot;);</b>
+<i>117</i>&nbsp;            }
+<b class="nc"><i>118</i>&nbsp;        } else {</b>
+<i>119</i>&nbsp;            // No close robots, so search for robots within sight radius
+<b class="nc"><i>120</i>&nbsp;            tryMove(randomDirection());</b>
+<i>121</i>&nbsp;        }
+<i>122</i>&nbsp;    }
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    static void runNetGun() throws GameActionException {
+<i>125</i>&nbsp;
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    /**
+<i>129</i>&nbsp;     * Returns a random Direction.
+<i>130</i>&nbsp;     *
+<i>131</i>&nbsp;     * @return a random Direction
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    static Direction randomDirection() {
+<b class="nc"><i>134</i>&nbsp;        return directions[(int) (Math.random() * directions.length)];</b>
+<i>135</i>&nbsp;    }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;    /**
+<i>138</i>&nbsp;     * Returns a random RobotType spawned by miners.
+<i>139</i>&nbsp;     *
+<i>140</i>&nbsp;     * @return a random RobotType
+<i>141</i>&nbsp;     */
+<i>142</i>&nbsp;    static RobotType randomSpawnedByMiner() {
+<b class="nc"><i>143</i>&nbsp;        return spawnedByMiner[(int) (Math.random() * spawnedByMiner.length)];</b>
+<i>144</i>&nbsp;    }
+<i>145</i>&nbsp;
+<i>146</i>&nbsp;    static boolean tryMove() throws GameActionException {
+<b class="nc"><i>147</i>&nbsp;        for (Direction dir : directions)</b>
+<b class="nc"><i>148</i>&nbsp;            if (tryMove(dir))</b>
+<b class="nc"><i>149</i>&nbsp;                return true;</b>
+<b class="nc"><i>150</i>&nbsp;        return false;</b>
+<i>151</i>&nbsp;        // MapLocation loc = rc.getLocation();
+<i>152</i>&nbsp;        // if (loc.x &lt; 10 &amp;&amp; loc.x &lt; loc.y)
+<i>153</i>&nbsp;        //     return tryMove(Direction.EAST);
+<i>154</i>&nbsp;        // else if (loc.x &lt; 10)
+<i>155</i>&nbsp;        //     return tryMove(Direction.SOUTH);
+<i>156</i>&nbsp;        // else if (loc.x &gt; loc.y)
+<i>157</i>&nbsp;        //     return tryMove(Direction.WEST);
+<i>158</i>&nbsp;        // else
+<i>159</i>&nbsp;        //     return tryMove(Direction.NORTH);
+<i>160</i>&nbsp;    }
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;    /**
+<i>163</i>&nbsp;     * Attempts to move in a given direction.
+<i>164</i>&nbsp;     *
+<i>165</i>&nbsp;     * @param dir The intended direction of movement
+<i>166</i>&nbsp;     * @return true if a move was performed
+<i>167</i>&nbsp;     * @throws GameActionException
+<i>168</i>&nbsp;     */
+<i>169</i>&nbsp;    static boolean tryMove(Direction dir) throws GameActionException {
+<i>170</i>&nbsp;        // System.out.println(&quot;I am trying to move &quot; + dir + &quot;; &quot; + rc.isReady() + &quot; &quot; + rc.getCooldownTurns() + &quot; &quot; + rc.canMove(dir));
+<b class="nc"><i>171</i>&nbsp;        if (rc.isReady() &amp;&amp; rc.canMove(dir)) {</b>
+<b class="nc"><i>172</i>&nbsp;            rc.move(dir);</b>
+<b class="nc"><i>173</i>&nbsp;            return true;</b>
+<b class="nc"><i>174</i>&nbsp;        } else return false;</b>
+<i>175</i>&nbsp;    }
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    /**
+<i>178</i>&nbsp;     * Attempts to build a given robot in a given direction.
+<i>179</i>&nbsp;     *
+<i>180</i>&nbsp;     * @param type The type of the robot to build
+<i>181</i>&nbsp;     * @param dir The intended direction of movement
+<i>182</i>&nbsp;     * @return true if a move was performed
+<i>183</i>&nbsp;     * @throws GameActionException
+<i>184</i>&nbsp;     */
+<i>185</i>&nbsp;    static boolean tryBuild(RobotType type, Direction dir) throws GameActionException {
+<b class="nc"><i>186</i>&nbsp;        if (rc.isReady() &amp;&amp; rc.canBuildRobot(type, dir)) {</b>
+<b class="nc"><i>187</i>&nbsp;            rc.buildRobot(type, dir);</b>
+<b class="nc"><i>188</i>&nbsp;            return true;</b>
+<b class="nc"><i>189</i>&nbsp;        } else return false;</b>
+<i>190</i>&nbsp;    }
+<i>191</i>&nbsp;
+<i>192</i>&nbsp;    /**
+<i>193</i>&nbsp;     * Attempts to mine soup in a given direction.
+<i>194</i>&nbsp;     *
+<i>195</i>&nbsp;     * @param dir The intended direction of mining
+<i>196</i>&nbsp;     * @return true if a move was performed
+<i>197</i>&nbsp;     * @throws GameActionException
+<i>198</i>&nbsp;     */
+<i>199</i>&nbsp;    static boolean tryMine(Direction dir) throws GameActionException {
+<b class="nc"><i>200</i>&nbsp;        if (rc.isReady() &amp;&amp; rc.canMineSoup(dir)) {</b>
+<b class="nc"><i>201</i>&nbsp;            rc.mineSoup(dir);</b>
+<b class="nc"><i>202</i>&nbsp;            return true;</b>
+<b class="nc"><i>203</i>&nbsp;        } else return false;</b>
+<i>204</i>&nbsp;    }
+<i>205</i>&nbsp;
+<i>206</i>&nbsp;    /**
+<i>207</i>&nbsp;     * Attempts to refine soup in a given direction.
+<i>208</i>&nbsp;     *
+<i>209</i>&nbsp;     * @param dir The intended direction of refining
+<i>210</i>&nbsp;     * @return true if a move was performed
+<i>211</i>&nbsp;     * @throws GameActionException
+<i>212</i>&nbsp;     */
+<i>213</i>&nbsp;    static boolean tryRefine(Direction dir) throws GameActionException {
+<b class="nc"><i>214</i>&nbsp;        if (rc.isReady() &amp;&amp; rc.canDepositSoup(dir)) {</b>
+<b class="nc"><i>215</i>&nbsp;            rc.depositSoup(dir, rc.getSoupCarrying());</b>
+<b class="nc"><i>216</i>&nbsp;            return true;</b>
+<b class="nc"><i>217</i>&nbsp;        } else return false;</b>
+<i>218</i>&nbsp;    }
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;    static void tryBlockchain() throws GameActionException {
+<b class="nc"><i>222</i>&nbsp;        if (turnCount &lt; 3) {</b>
+<b class="nc"><i>223</i>&nbsp;            int[] message = new int[7];</b>
+<b class="nc"><i>224</i>&nbsp;            for (int i = 0; i &lt; 7; i++) {</b>
+<b class="nc"><i>225</i>&nbsp;                message[i] = 123;</b>
+<i>226</i>&nbsp;            }
+<b class="nc"><i>227</i>&nbsp;            if (rc.canSubmitTransaction(message, 10))</b>
+<b class="nc"><i>228</i>&nbsp;                rc.submitTransaction(message, 10);</b>
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;        // System.out.println(rc.getRoundMessages(turnCount-1));
+<i>231</i>&nbsp;    }
+<i>232</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-11-05 11:02</div>
+</div>
+</body>
+</html>

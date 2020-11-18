@@ -1,9 +1,7 @@
 package team8player;
 
 import battlecode.common.*;
-
 import static team8player.Globals.*;
-
 import java.util.*;
 
 public class Blockchain {
@@ -18,7 +16,7 @@ public class Blockchain {
             for(Transaction t : rc.getBlock(i)) {
                 int[] message = t.getMessage();
                 for(int j = 0; j < txLength; j++) {
-                    if(msgFilter[j] != -1 && msgFilter[j] == message[j]) {
+                    if(msgFilter[j] == -1 || msgFilter[j] == message[j]) {
                         if(j == txLength - 1) {
                             //System.out.printf("I received a %s message from the Blockchain!%n",
                                     //getMTDescFromId(msgFilter[1]));
@@ -26,6 +24,9 @@ public class Blockchain {
                             count++;
                             if(count == n) { return result;}
                         }
+                    }
+                    else {
+                        break;
                     }
                 }
             }
@@ -39,14 +40,16 @@ public class Blockchain {
     }
 
     // Message senders  *** removing hostility since this will only be used to sent the location of enemies
-    public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
+    /*public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
+
         int[] message = new int[txLength];
         message[0] = teamCode;
-        message[1] = MSG_ROBOT_LOCATON;
-        message[2] = robotType;
-        message[3] = loc.x;
-        message[4] = loc.y;
-        message[5] = -1;
+        message[1] = selfID;
+        message[2] = MSG_ROBOT_LOCATON;
+        message[3] = robotType;
+        message[4] = loc.x;
+        message[5] = loc.y;
+        message[6] = -1;
         System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",
                 Globals.intToRobot(robotType),
                 loc.x,
@@ -54,20 +57,16 @@ public class Blockchain {
                 txCost);
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
-            System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",
-                    Globals.intToRobot(robotType),
-                    loc.x,
-                    loc.y,
-                    txCost);
         }
-    }
+    }*/
 
-    public static void sendSoupLoc(MapLocation loc, int txCost) throws GameActionException {
+    /*public static void sendSoupLoc(MapLocation loc, int txCost) throws GameActionException {
         int[] message = new int[txLength];
         message[0] = teamCode;
-        message[1] = MSG_SOUP_LOCATION;
-        message[2] = loc.x;
-        message[3] = loc.y;
+        message[1] = selfID;
+        message[2] = MSG_SOUP_LOCATION;
+        message[3] = loc.x;
+        message[4] = loc.y;
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
             System.out.printf("I sent the location of soup at [%d, %d] to the blockchain for %d!%n",
@@ -75,13 +74,14 @@ public class Blockchain {
                     loc.y,
                     txCost);
         }
-    }
+    }*/
+
     // Made as a pseudo template for future types of messages.
-    public static void sendStatusUpdate(int updateType, int[] values, int txCost) throws GameActionException {
+    public static void sendMessage(int messageType, int[] values, int txCost) throws GameActionException {
         int[] message = new int[txLength];
         message[0] = teamCode;
-        message[1] = MSG_STATUS_UPDATE;
-        message[2] = updateType;
+        message[1] = selfID;
+        message[2] = messageType;
         int i = 3;
         for(int x: values) {
             message[i] = x;
@@ -91,7 +91,7 @@ public class Blockchain {
         }
         if(rc.canSubmitTransaction(message, txCost)) {
             rc.submitTransaction(message, txCost);
-            System.out.printf("I sent a %s update to the blockchain for %d!%n", getUpdateType(message[2]), txCost);
+            //System.out.printf("I sent a %s message to the blockchain for %d!%n", getUpdateType(message[2]), txCost);
         }
     }
 
@@ -101,16 +101,20 @@ public class Blockchain {
     public static void updateListsFromBC() throws GameActionException {
         LinkedList<int[]> messages = getTeamMessages();
         for(int[] msg: messages) {
-            switch (msg[1]) {
+            if(msg[1] == selfID)
+                continue;
+            switch (msg[2]) {
                 case MSG_ROBOT_LOCATON:
                     parseRobotLoc(msg);
                     break;
                 case MSG_SOUP_LOCATION:
                     parseSoupLoc(msg);
                     break;
-                case MSG_STATUS_UPDATE:
-                    parseUpdate(msg);
+                case MSG_COW_LOCATION:
+                    //parseCowLocation(msg); -- todo
                     break;
+                case MSG_RBT_BUILT:
+                    updateRobotBuilt(msg);
                 default:
                     break;
             }
@@ -119,7 +123,7 @@ public class Blockchain {
     }
 
     public static void parseRobotLoc(int[] message) {
-        switch(message[2]) {
+        switch(message[3]) {
             case UNT_MINER:
                 break;
             case UNT_LANDSCAPER:
@@ -140,6 +144,8 @@ public class Blockchain {
                 break;
             case UNT_COW:
                 break;
+            default:
+                break;
         }
     }
 
@@ -147,7 +153,7 @@ public class Blockchain {
         soupLocs.add(new MapLocation(message[2], message[3]));
     }
 
-    public static void parseUpdate(int[] message) {
+    /*public static void parseUpdate(int[] message) {
         switch(message[2]) {
             case UPD_ROBOT_LOCATION:
                 updateRobotLoc(message);
@@ -155,8 +161,10 @@ public class Blockchain {
                 updateRobotBuilt(message);
             case UPD_SOUP_USED:
                 moveSoupToUsed(message);
+            default:
+                break;
         }
-    }
+    }*/
 
     public static void updateRobotLoc(int[] message) {
         switch (message[3]) {
@@ -181,31 +189,51 @@ public class Blockchain {
                 break;
             case UNT_COW:
                 break;
+            default:
+                break;
         }
     }
 
     public static void updateRobotBuilt(int[] message) {
+        MapLocation loc = new MapLocation(message[4], message[5]);
         switch (message[3]) {
             case UNT_MINER:
+                numMiners++;
                 break;
             case UNT_LANDSCAPER:
+                numLandscapers++;
                 break;
             case UNT_DDRONE:
+                numDrones++;
                 break;
             case BLD_HQ:
-                HqLocation = new MapLocation(message[4], message[5]);
+                HqLocation = loc;
+                if(!refineries.contains(loc))
+                    refineries.add(loc);
                 break;
             case BLD_REFINERY:
+                if(!refineries.contains(loc))
+                    refineries.add(loc);
                 break;
             case BLD_VAPORATOR:
+                if(!vaporators.contains(loc))
+                    vaporators.add(loc);
                 break;
             case BLD_DESIGNSCH:
+                if(!designSchools.contains(loc))
+                    designSchools.add(loc);
                 break;
             case BLD_FLMTCNTR:
+                if(!fulCenters.contains(loc))
+                    fulCenters.add(loc);
                 break;
             case BLD_NETGUN:
+                if(!netGuns.contains(loc))
+                    netGuns.add(loc);
                 break;
             case UNT_COW:
+                break;
+            default:
                 break;
         }
     }

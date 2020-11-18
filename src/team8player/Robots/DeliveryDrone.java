@@ -1,20 +1,20 @@
 package team8player.Robots;
 
 import battlecode.common.*;
-import static team8player.Globals.*;
 
-public class DeliveryDrone extends  Unit {
+public class DeliveryDrone extends Unit {
 
     /**
      * Robot constructor
      * @return a random RobotType
      */
-    public DeliveryDrone() {
+    public DeliveryDrone(RobotController rc) {
+        super(rc);
     }
 
     @Override
     public void run() throws GameActionException {
-        super.run();
+        super.startOfTurn();
         Team enemy = rc.getTeam().opponent();
         if (!rc.isCurrentlyHoldingUnit()) {
             // See if there are any enemy robots within capturing range

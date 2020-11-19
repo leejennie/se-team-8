@@ -2,6 +2,7 @@ package team8player.Robots;
 
 import battlecode.common.*;
 import battlecode.server.GameState;
+import gnu.trove.impl.sync.TSynchronizedShortByteMap;
 import team8player.*;
 import static team8player.Globals.*;
 

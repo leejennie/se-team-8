@@ -33,7 +33,7 @@ public class HQ extends Building {
 
         //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
         // thought it was helpful to winning the game because having more miners can produce more "robots"
-        if(numMiners < refineries.size() * 5) { // limit the number of miners to 3 for every refinery (HQ included)
+        if(numMiners < ((refineries.size() - 1) * 3) + 5) { // create 5 miners for the hq, and 3 for each refinery after
             tryBuild(RobotType.MINER);
         }
     }

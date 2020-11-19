@@ -63,7 +63,7 @@ public abstract class PlayerBot {
      * @return true if a move was performed
      * @throws GameActionException
      */
-    static boolean tryBuild(RobotType type, Direction dir) throws GameActionException {
+    public static boolean tryBuild(RobotType type, Direction dir) throws GameActionException {
         MapLocation loc = rc.getLocation().add(dir);
         if(!isUnit(type))
             // if trying to build a building in a spot adjacent to another building, return false

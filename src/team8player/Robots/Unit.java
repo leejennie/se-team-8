@@ -7,15 +7,13 @@ import team8player.*;
 
 import java.util.LinkedList;
 
-
-
 public class Unit extends PlayerBot {
 
     public Unit(RobotController rc) {
         super(rc);
     }
 
-    static void findHQ() throws GameActionException {
+    public static void findHQ() throws GameActionException {
         for (RobotInfo robot : nearbyBots) {
             if(robot.type == RobotType.HQ && robot.team != rc.getTeam()) {
                 Blockchain.sendMessage(MSG_ROBOT_LOCATON, new int[]{BLD_HQ, robot.location.x, robot.location.y}, 10);
@@ -23,7 +21,7 @@ public class Unit extends PlayerBot {
         }
     }
 
-    static boolean tryMove() throws GameActionException {
+    public static boolean tryMove() throws GameActionException {
         if(dirTurnsLeft == 0) {
             Direction tmpDir = currDirection;
             while(tmpDir == currDirection) {
@@ -47,7 +45,7 @@ public class Unit extends PlayerBot {
      * @return true if a move was performed
      * @throws GameActionException
      */
-    static boolean tryMove(Direction dir) throws GameActionException {
+    public static boolean tryMove(Direction dir) throws GameActionException {
         MapLocation tmp = rc.getLocation().add(dir);
         //System.out.printf("Trying to move to [%d] [%d]%n", tmp.x, tmp.y);
         if(rc.canSenseLocation(rc.getLocation().add(dir))) {
@@ -71,7 +69,7 @@ public class Unit extends PlayerBot {
         }
     }
 
-    static void endTurn() throws GameActionException {
+    public static void endTurn() throws GameActionException {
 
         // If currentGoal != null, move in that directio
         if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));

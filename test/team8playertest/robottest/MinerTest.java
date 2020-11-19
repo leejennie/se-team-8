@@ -21,10 +21,19 @@ public class MinerTest {
     public void testTryMine() throws GameActionException {
         Miner m1 = Mockito.mock(Miner.class);
         m1.rc = Mockito.mock(RobotController.class);
-        if (m1.rc.getType() == RobotType.MINER){
-            when(m1.tryMine(Direction.SOUTH)).thenReturn(true);
-            assertEquals(m1.tryMine(Direction.SOUTH), true);
-        }
+        when(m1.rc.getType()).thenReturn(RobotType.MINER);
+        when(m1.rc.isReady()).thenReturn(true);
+        when(m1.rc.canMineSoup(Direction.SOUTH)).thenReturn(true);
+        m1.tryMine(Direction.SOUTH);
+    }
+
+    @Test
+    public void testTryMineFalse() throws GameActionException {
+        Miner m1 = Mockito.mock(Miner.class);
+        m1.rc = Mockito.mock(RobotController.class);
+        when(m1.rc.getType()).thenReturn(RobotType.MINER);
+        when(m1.rc.isReady()).thenReturn(false);
+        when(m1.rc.canMineSoup(Direction.SOUTH)).thenReturn(false);
         m1.tryMine(Direction.SOUTH);
     }
 
@@ -32,12 +41,27 @@ public class MinerTest {
     public void testTryDeposit() throws GameActionException {
         Miner m1 = Mockito.mock(Miner.class);
         m1.rc = Mockito.mock(RobotController.class);
-        if (m1.rc.getType() == RobotType.MINER){
-            when(m1.tryDeposit(Direction.SOUTH)).thenReturn(true);
-            assertEquals(m1.tryDeposit(Direction.SOUTH), true);
-        }
+        when(m1.rc.getType()).thenReturn(RobotType.MINER);
+        when(m1.rc.isReady()).thenReturn(true);
+        when(m1.rc.canDepositSoup(Direction.SOUTH)).thenReturn(true);
         m1.tryDeposit(Direction.SOUTH);
     }
 
+    @Test
+    public void testTryDepositFalse() throws GameActionException {
+        Miner m1 = Mockito.mock(Miner.class);
+        m1.rc = Mockito.mock(RobotController.class);
+        when(m1.rc.getType()).thenReturn(RobotType.MINER);
+        when(m1.rc.isReady()).thenReturn(false);
+        when(m1.rc.canDepositSoup(Direction.SOUTH)).thenReturn(false);
+        m1.tryDeposit(Direction.SOUTH);
+    }
+
+    @Test
+    public void testRun() throws GameActionException {
+        RobotController rc = Mockito.mock(RobotController.class);
+        Miner m1 = new Miner(rc);
+        m1.run();
+    }
 }
 

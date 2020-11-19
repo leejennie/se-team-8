@@ -1,7 +1,7 @@
 package team8playertest.robottest;
 
-import team8player.Robots.Miner;
 import team8player.Robots.Unit;
+import team8player.Blockchain;
 import battlecode.common.*;
 import battlecode.common.RobotController;
 import org.junit.Test;
@@ -19,36 +19,46 @@ public class UnitTest {
     }
 
     @Test
-    public void testTryMove1() throws GameActionException {
+    public void testFindHQ() throws GameActionException {
         Unit u1 = Mockito.mock(Unit.class);
         u1.rc = Mockito.mock(RobotController.class);
-        if (u1.rc.getType() == RobotType.MINER){
-            when(u1.tryMove()).thenReturn(true);
-            assertEquals(u1.tryMove(), true);
-        }
-        u1.tryMove();
+        when (u1.rc.getType()).thenReturn(RobotType.HQ);
+        when (u1.rc.getTeam()).thenReturn(Team.A);
+        u1.findHQ();
     }
 
     @Test
     public void testTryMove() throws GameActionException {
         Unit u1 = Mockito.mock(Unit.class);
         u1.rc = Mockito.mock(RobotController.class);
-        if (u1.rc.getType() == RobotType.MINER){
-            when(u1.tryMove(Direction.SOUTH)).thenReturn(true);
-            assertEquals(u1.tryMove(Direction.SOUTH), true);
-        }
-        u1.tryMove(Direction.SOUTH);
+        MapLocation temp = new MapLocation(5,5);
+        when (u1.rc.getType()).thenReturn(RobotType.MINER);
+        when (u1.rc.getLocation()).thenReturn(temp);
+        when (u1.rc.canSenseLocation(temp)).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(4,6))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(5,6))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(6,6))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(5,4))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(6,5))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(4,4))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(5,4))).thenReturn(true);
+        when (u1.rc.canSenseLocation(new MapLocation(6,4))).thenReturn(true);
+        when (u1.rc.isReady()).thenReturn(true);
+        when (u1.rc.canMove(Direction.SOUTH)).thenReturn(true);
+        when (u1.rc.canMove(Direction.NORTH)).thenReturn(true);
+        when (u1.rc.canMove(Direction.NORTHEAST)).thenReturn(true);
+        when (u1.rc.canMove(Direction.EAST)).thenReturn(true);
+        when (u1.rc.canMove(Direction.SOUTHEAST)).thenReturn(true);
+        when (u1.rc.canMove(Direction.SOUTHWEST)).thenReturn(true);
+        when (u1.rc.canMove(Direction.WEST)).thenReturn(true);
+        when (u1.rc.canMove(Direction.NORTHWEST)).thenReturn(true);
+        u1.tryMove();
     }
 
-    @Test // Need to fix this
+    @Test
     public void testEndTurn() throws GameActionException {
         Unit u1 = Mockito.mock(Unit.class);
         u1.rc = Mockito.mock(RobotController.class);
-        if (u1.rc.getType() == RobotType.MINER) {
-            doNothing().when(u1).endTurn();
-            verify(u1, times(1)).endTurn();
-        }
         u1.endTurn();
     }
-
 }

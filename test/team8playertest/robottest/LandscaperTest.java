@@ -7,10 +7,9 @@ import battlecode.common.RobotType;
 import org.junit.Test;
 import org.mockito.Mockito;
 import team8player.Robots.Landscaper;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
+
 
 public class LandscaperTest {
 
@@ -25,45 +24,36 @@ public class LandscaperTest {
     public void testTryDig() throws GameActionException {
         Landscaper l1 = Mockito.mock(Landscaper.class);
         l1.rc = Mockito.mock(RobotController.class);
-        if (l1.rc.getType() == RobotType.LANDSCAPER){
-            when(l1.tryDig(Direction.NORTH)).thenReturn(true);
-            assertEquals(l1.tryDig(Direction.NORTH), true);
-        }
-        l1.tryDig(Direction.NORTH);
+        when(l1.rc.getType()).thenReturn(RobotType.LANDSCAPER);
+        when(l1.rc.canDigDirt(Direction.SOUTH)).thenReturn(true);
+        l1.tryDig(Direction.SOUTH);
     }
 
     @Test
-    public void testDigDirt() throws GameActionException {
+    public void testTryDigFalse() throws GameActionException {
         Landscaper l1 = Mockito.mock(Landscaper.class);
         l1.rc = Mockito.mock(RobotController.class);
-        if (l1.rc.getType() == RobotType.LANDSCAPER) {
-            doNothing().when(l1.rc).digDirt(Direction.NORTH);
-            verify(l1.rc, times(1)).digDirt(Direction.NORTH);
-        }
-        l1.rc.digDirt(Direction.NORTH);
+        when(l1.rc.getType()).thenReturn(RobotType.LANDSCAPER);
+        when(l1.rc.canDigDirt(Direction.SOUTH)).thenReturn(false);
+        l1.tryDig(Direction.SOUTH);
     }
 
     @Test
     public void testTryDepositDirt() throws GameActionException {
         Landscaper l1 = Mockito.mock(Landscaper.class);
         l1.rc = Mockito.mock(RobotController.class);
-        if (l1.rc.getType() == RobotType.LANDSCAPER){
-            when(l1.tryDepositDirt(Direction.NORTH)).thenReturn(true);
-            assertEquals(l1.tryDepositDirt(Direction.NORTH), true);
-        }
-        l1.tryDepositDirt(Direction.NORTH);
+        when(l1.rc.getType()).thenReturn(RobotType.LANDSCAPER);
+        when(l1.rc.canDepositDirt(Direction.SOUTH)).thenReturn(true);
+        l1.tryDepositDirt(Direction.SOUTH);
     }
 
-    @Test // Need to fix this
-    public void testRun() throws GameActionException {
+    @Test
+    public void testTryDepositDirtFalse() throws GameActionException {
         Landscaper l1 = Mockito.mock(Landscaper.class);
         l1.rc = Mockito.mock(RobotController.class);
-        if (l1.rc.getType() == RobotType.LANDSCAPER) {
-            doAnswer((i) -> {
-                return true;
-            }).when(l1).run();
-            l1.run();
-            verify(l1, times(1)).run();
-        }
+        when(l1.rc.getType()).thenReturn(RobotType.LANDSCAPER);
+        when(l1.rc.canDepositDirt(Direction.SOUTH)).thenReturn(false);
+        l1.tryDepositDirt(Direction.SOUTH);
     }
+
 }

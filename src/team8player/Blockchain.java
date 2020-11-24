@@ -39,42 +39,13 @@ public class Blockchain {
         return getMessages(-1, filter);
     }
 
-    // Message senders  *** removing hostility since this will only be used to sent the location of enemies
-    /*public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
-
-        int[] message = new int[txLength];
-        message[0] = teamCode;
-        message[1] = selfID;
-        message[2] = MSG_ROBOT_LOCATON;
-        message[3] = robotType;
-        message[4] = loc.x;
-        message[5] = loc.y;
-        message[6] = -1;
-        System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",
-                Globals.intToRobot(robotType),
-                loc.x,
-                loc.y,
-                txCost);
-        if(rc.canSubmitTransaction(message, txCost)) {
-            rc.submitTransaction(message, txCost);
+    public static boolean checkListForLoc(LinkedList<MapLocation> locs, MapLocation loc) {
+        for(MapLocation l: locs) {
+            if(l.equals(loc))
+                return true;
         }
-    }*/
-
-    /*public static void sendSoupLoc(MapLocation loc, int txCost) throws GameActionException {
-        int[] message = new int[txLength];
-        message[0] = teamCode;
-        message[1] = selfID;
-        message[2] = MSG_SOUP_LOCATION;
-        message[3] = loc.x;
-        message[4] = loc.y;
-        if(rc.canSubmitTransaction(message, txCost)) {
-            rc.submitTransaction(message, txCost);
-            System.out.printf("I sent the location of soup at [%d, %d] to the blockchain for %d!%n",
-                    loc.x,
-                    loc.y,
-                    txCost);
-        }
-    }*/
+        return false;
+    }
 
     // Made as a pseudo template for future types of messages.
     public static void sendMessage(int messageType, int[] values, int txCost) throws GameActionException {
@@ -208,27 +179,27 @@ public class Blockchain {
                 break;
             case BLD_HQ:
                 HqLocation = loc;
-                if(!refineries.contains(loc))
+                if(!checkListForLoc(refineries, loc))
                     refineries.add(loc);
                 break;
             case BLD_REFINERY:
-                if(!refineries.contains(loc))
+                if(!checkListForLoc(refineries, loc))
                     refineries.add(loc);
                 break;
             case BLD_VAPORATOR:
-                if(!vaporators.contains(loc))
+                if(!checkListForLoc(vaporators, loc))
                     vaporators.add(loc);
                 break;
             case BLD_DESIGNSCH:
-                if(!designSchools.contains(loc))
+                if(!checkListForLoc(designSchools, loc))
                     designSchools.add(loc);
                 break;
             case BLD_FLMTCNTR:
-                if(!fulCenters.contains(loc))
+                if(!checkListForLoc(fulCenters, loc))
                     fulCenters.add(loc);
                 break;
             case BLD_NETGUN:
-                if(!netGuns.contains(loc))
+                if(!checkListForLoc(netGuns, loc))
                     netGuns.add(loc);
                 break;
             case UNT_COW:

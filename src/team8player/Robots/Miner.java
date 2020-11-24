@@ -84,7 +84,7 @@ public class Miner extends Unit {
         }
 
         // If there are too many miners nearby, move away -- removed because it wasn't working
-        /*int x = rc.getLocation().x;
+        int x = rc.getLocation().x;
         int y = rc.getLocation().y;
         int count = 0;
         for(RobotInfo rbt: nearbyBots) {
@@ -95,6 +95,7 @@ public class Miner extends Unit {
             }
         }
         if(count > 2) {
+            currentGoal = null;
             MapLocation avg = new MapLocation(x, y);
             currDirection = rc.getLocation().directionTo(avg).opposite();
             // make sure it doesn't get stuck in a loop in place
@@ -105,13 +106,16 @@ public class Miner extends Unit {
             dirTurnsLeft = 15;
             while(rc.isReady())
                 tryMove(currDirection);
-        }*/
+        }
 
         // try to build based on the spawnFilter list
         int[] spawnFilter = {0, 0, 0, 0, 0};
         // Conditions to skip to certain buildings
+        // Until there's a few refineries, skip other buildings
+        if(refineries.size() < 2)
+            for(int i = 1; i < spawnFilter.length; i++) { spawnFilter[i]++; }
         // if there's more than twice as many refineries as designSchools, don't build more refineries
-        if(refineries.size() > fulCenters.size() + 1) // || (refineries.size() > 0 && designSchools.size() == 0)) --changed this just to get more things to spawn
+        if(refineries.size() > fulCenters.size() + 2)
             spawnFilter[0]++;
         // if there's more fulfillment centers than design schools, don't build fulfillment centers
         if(fulCenters.size() > designSchools.size())
@@ -121,14 +125,14 @@ public class Miner extends Unit {
         if(vaporators.size() > netGuns.size())
             spawnFilter[3]++;
         // if the current location is above a pollution threshold, prioritize a vaporator
-        if(rc.sensePollution(rc.getLocation()) > 20) {
+        if(rc.sensePollution(rc.getLocation()) > 50 && refineries.size() > 1) {
             spawnFilter[0]++;
             spawnFilter[1]++;
             spawnFilter[2]++;
         }
         // if the enemy HQ location isn't known, skip design schools
         //if(enemyHqLocation == null) { spawnFilter[2]++; }
-        int buildingDistanceThreshold = 10;
+        int buildingDistanceThreshold = 50;
         for(MapLocation bld: refineries) {
             if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
                 spawnFilter[0]++;
@@ -155,16 +159,18 @@ public class Miner extends Unit {
             if(rbt.type == RobotType.DELIVERY_DRONE && rbt.team != rc.getTeam())
                 tryBuild(RobotType.NET_GUN);
         }
-        spawnFilter[0] = 0;
         for(int i = 0; i < spawnFilter.length; i++) {
             if (spawnFilter[i] < 1) {
+                if(i == 1)
+                    i=i;
                 tryBuild(spawnList[i]);
+                break;
             }
         }
 
         // check for nearby soupLocs
         int maxSoupDistance = 5;
-        if(soupLocs != null) for(MapLocation loc: soupLocs) {
+        if(soupLocs != null && count < 2) for(MapLocation loc: soupLocs) {
             if(rc.getLocation().distanceSquaredTo(loc) < maxSoupDistance) {
                 currentGoal = loc;
             }
@@ -172,9 +178,9 @@ public class Miner extends Unit {
 
         // try to sense nearby soup and set it as the goal if there isn't already a soup goal
         MapLocation soup[] = rc.senseNearbySoup();
-        if(currentGoal == null && soup.length > 0)
+        if(currentGoal == null && soup.length > 0 && count < 2)
             currentGoal = soup[(int)(Math.random() * soup.length)];
-        else if(soup.length > 0) {
+        else if(soup.length > 0 && count < 2) {
             boolean found = false;
             for(int i = 0; i < soup.length; i++) {
                 if(soup[i] == currentGoal) {
@@ -190,7 +196,6 @@ public class Miner extends Unit {
         // try to mine
         skipMovement = false;
         for (Direction dir : Direction.allDirections()) {
-            MapLocation tmp = rc.getLocation().add(dir);
             if (tryMine(dir)) {
                 skipMovement = true;
                 break;

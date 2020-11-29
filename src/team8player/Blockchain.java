@@ -97,6 +97,8 @@ public class Blockchain {
                 case MSG_CHECK_IN:
                     checkIn(msg);
                     break;
+                case MSG_PHS_CHANGE:
+                    stratPhase = msg[3];
                 default:
                     break;
             }

@@ -22,17 +22,24 @@ public class HQ extends Building {
         switch(stratPhase) {
             // If grown enough, switch to search phase
             case STR_PHS_EXPAND:
-                if(refineries.size() == 2 && designSchools.size() == 1 && fulCenters.size() == 1)
+                if(refineries.size() == 2 && designSchools.size() == 1 && fulCenters.size() == 1) {
                     stratPhase = STR_PHS_SEARCH;
+                    Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_SEARCH}, 20);
+                }
                 break;
             case STR_PHS_SEARCH:
                 // If we know enemy HQ location and have the attack force needed, switch to destroy phase
-                if(enemyHqLocation != null && true) { // true to be replaced with other conditionals
+                if(enemyHqLocation != null && drones.size() > 2 && landscapers.size() > 2) {
                     stratPhase = STR_PHS_DESTROY;
+                    Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_DESTROY}, 20);
                 }
                 break;
             case STR_PHS_DESTROY:
                 // If we lost our attack force, reset to expand phase
+                if(drones.size() < 2 || landscapers.size() < 2) {
+                    stratPhase = STR_PHS_EXPAND;
+                    Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_EXPAND}, 20);
+                }
                 break;
         }
 

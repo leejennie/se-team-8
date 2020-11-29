@@ -67,6 +67,8 @@ public class Miner extends Unit {
         // Call the parent's run method to start the turn
         super.run();
 
+        // Change actions based on current phase
+
         // if mining more would cause waste, try to deposit soup
         if(rc.getSoupCarrying() > RobotType.MINER.soupLimit - GameConstants.SOUP_MINING_RATE) {
             // try to deposit
@@ -115,12 +117,12 @@ public class Miner extends Unit {
         if(refineries.size() < 2)
             for(int i = 1; i < spawnFilter.length; i++) { spawnFilter[i]++; }
         // if there's more than twice as many refineries as designSchools, don't build more refineries
-        if(refineries.size() > fulCenters.size() + 2)
+        if(refineries.size() == 2)
             spawnFilter[0]++;
         // if there's more fulfillment centers than design schools, don't build fulfillment centers
-        if(fulCenters.size() > designSchools.size())
+        if(fulCenters.size() == 1)
             spawnFilter[1]++;
-        if(designSchools.size() > vaporators.size())
+        if(designSchools.size() == 1)
             spawnFilter[2]++;
         if(vaporators.size() > netGuns.size())
             spawnFilter[3]++;

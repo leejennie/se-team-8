@@ -26,6 +26,10 @@ public class HQ extends Building {
                     stratPhase = STR_PHS_SEARCH;
                     Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_SEARCH}, 20);
                 }
+                // create 5 miners for the hq, and 3 for each refinery after
+                if(miners.size() < ((refineries.size() - 1) * 3) + 5) {
+                    tryBuild(RobotType.MINER);
+                }
                 break;
             case STR_PHS_SEARCH:
                 // If we know enemy HQ location and have the attack force needed, switch to destroy phase
@@ -43,8 +47,6 @@ public class HQ extends Building {
                 break;
         }
 
-        // If enemy HQ Location is known, shift to attack phase
-
         super.run();
         // make sure refineries isn't empty to avoid dividing by 0
         if(refineries.size() == 0) {
@@ -59,10 +61,5 @@ public class HQ extends Building {
                     rc.shootUnit(rbt.ID);
         }
 
-        //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
-        // thought it was helpful to winning the game because having more miners can produce more "robots"
-        if(miners.size() < ((refineries.size() - 1) * 3) + 5) { // create 5 miners for the hq, and 3 for each refinery after
-            tryBuild(RobotType.MINER);
-        }
     }
 }

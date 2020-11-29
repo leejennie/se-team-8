@@ -62,41 +62,23 @@ public class Miner extends Unit {
     }
 
 
-    @Override
-    public void run() throws GameActionException {
-        // Call the parent's run method to start the turn
-        super.run();
-
-        // Change actions based on current phase
-
-        // if mining more would cause waste, try to deposit soup
-        if(rc.getSoupCarrying() > RobotType.MINER.soupLimit - GameConstants.SOUP_MINING_RATE) {
-            // try to deposit
-            for(Direction dir: Direction.allDirections()) {
-                tryDeposit(dir);
-            }
-            int min = 9999;
-            for(MapLocation loc: refineries) {
-                int tmp = rc.getLocation().distanceSquaredTo(loc);
-                if (tmp < min) {
-                    currentGoal = loc;
-                    min = tmp;
-                }
-            }
-        }
-
-        // If there are too many miners nearby, move away -- removed because it wasn't working
-        int x = rc.getLocation().x;
-        int y = rc.getLocation().y;
+    // separating the strategy phases into methods for readability
+    public static void expandPhase() throws GameActionException {
+        // If there are too many miners nearby, move away
         int count = 0;
-        for(RobotInfo rbt: nearbyBots) {
-            if(rbt.type == RobotType.MINER) {
-                x = (rbt.location.x + x) / 2;
-                y = (rbt.location.y + y) / 2;
-                count++;
+        int x = currentLoc.x;
+        int y = currentLoc.y;
+        for(Integer[] miner: miners) {
+                MapLocation tmp = new MapLocation(miner[2], miner[3]);
+                if(currentLoc.distanceSquaredTo(tmp) < MINER_RADIUS) {
+                    x = (miner[2] + x);
+                    y = (miner[3] + y);
+                    count++;
             }
         }
         if(count > 2) {
+            x = x / count;
+            y = y / count;
             currentGoal = null;
             MapLocation avg = new MapLocation(x, y);
             currDirection = rc.getLocation().directionTo(avg).opposite();
@@ -132,27 +114,28 @@ public class Miner extends Unit {
             spawnFilter[1]++;
             spawnFilter[2]++;
         }
+
         // if the enemy HQ location isn't known, skip design schools
         //if(enemyHqLocation == null) { spawnFilter[2]++; }
         int buildingDistanceThreshold = 50;
         for(MapLocation bld: refineries) {
-            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+            if(bld.distanceSquaredTo(currentLoc) < buildingDistanceThreshold)
                 spawnFilter[0]++;
         }
         for(MapLocation bld: fulCenters) {
-            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+            if(bld.distanceSquaredTo(currentLoc) < buildingDistanceThreshold)
                 spawnFilter[1]++;
         }
         for(MapLocation bld: designSchools) {
-            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+            if(bld.distanceSquaredTo(currentLoc) < buildingDistanceThreshold)
                 spawnFilter[2]++;
         }
         for(MapLocation bld: vaporators) {
-            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+            if(bld.distanceSquaredTo(currentLoc) < buildingDistanceThreshold)
                 spawnFilter[3]++;
         }
         for(MapLocation bld: netGuns) {
-            if(bld.distanceSquaredTo(rc.getLocation()) < buildingDistanceThreshold)
+            if(bld.distanceSquaredTo(currentLoc) < buildingDistanceThreshold)
                 spawnFilter[4]++;
         }
 
@@ -164,15 +147,60 @@ public class Miner extends Unit {
         for(int i = 0; i < spawnFilter.length; i++) {
             if (spawnFilter[i] < 1) {
                 if(i == 1)
-                    i=i;
                 tryBuild(spawnList[i]);
                 break;
             }
         }
+    }
 
+    public static void searchPhase() {
+
+    }
+
+    public static void destroyPhase() {
+
+    }
+
+
+    @Override
+    public void run() throws GameActionException {
+        // Call the parent's run method to start the turn
+        super.run();
+
+        // if mining more would cause waste, try to deposit soup
+        if(rc.getSoupCarrying() > RobotType.MINER.soupLimit - GameConstants.SOUP_MINING_RATE) {
+            // try to deposit
+            for(Direction dir: Direction.allDirections()) {
+                tryDeposit(dir);
+            }
+            int min = 9999;
+            for(MapLocation loc: refineries) {
+                int tmp = rc.getLocation().distanceSquaredTo(loc);
+                if (tmp < min) {
+                    currentGoal = loc;
+                    min = tmp;
+                }
+            }
+        }
+
+        switch(stratPhase) {
+            case STR_PHS_EXPAND:
+                expandPhase();
+                break;
+            case STR_PHS_SEARCH:
+                searchPhase();
+                break;
+            case STR_PHS_DESTROY:
+                destroyPhase();
+                break;
+            default:
+                break;
+        }
+
+        // Things for the miner to do regardless of phase
         // check for nearby soupLocs
         int maxSoupDistance = 5;
-        if(soupLocs != null && count < 2) for(MapLocation loc: soupLocs) {
+        if(soupLocs != null && rc.isReady()) for(MapLocation loc: soupLocs) {
             if(rc.getLocation().distanceSquaredTo(loc) < maxSoupDistance) {
                 currentGoal = loc;
             }
@@ -180,12 +208,12 @@ public class Miner extends Unit {
 
         // try to sense nearby soup and set it as the goal if there isn't already a soup goal
         MapLocation soup[] = rc.senseNearbySoup();
-        if(currentGoal == null && soup.length > 0 && count < 2)
+        if(currentGoal == null && soup.length > 0 && rc.isReady())
             currentGoal = soup[(int)(Math.random() * soup.length)];
-        else if(soup.length > 0 && count < 2) {
+        else if(soup.length > 0 && rc.isReady()) {
             boolean found = false;
-            for(int i = 0; i < soup.length; i++) {
-                if(soup[i] == currentGoal) {
+            for (MapLocation mapLocation : soup) {
+                if (mapLocation == currentGoal) {
                     found = true;
                     break;
                 }

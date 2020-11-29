@@ -24,6 +24,17 @@ public class Landscaper extends Unit {
     public void run() throws GameActionException {
         super.run();
 
+        switch(stratPhase) {
+            case STR_PHS_EXPAND:
+                break;
+            case STR_PHS_SEARCH:
+                break;
+            case STR_PHS_DESTROY:
+                break;
+            default:
+                break;
+        }
+
         int currDirt = rc.getDirtCarrying();
         if (currDirt == 0) {
             Direction dir = PlayerBot.randomDirection();

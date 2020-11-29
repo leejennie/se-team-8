@@ -78,6 +78,7 @@ public class Globals {
     // Other various globals
     public static final int MAX_TURNS_DIR       = 30;
     public static final int TURNS_TIL_DEAD      = 6;
+    public static final int MINER_RADIUS        = 5;
 
 
 

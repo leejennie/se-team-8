@@ -47,6 +47,14 @@ public class Blockchain {
         return false;
     }
 
+    public static boolean checkListForBot(LinkedList<Integer[]> bots, int botID) {
+        for(Integer[] bot: bots) {
+            if (botID == bot[0])
+                return true;
+        }
+        return false;
+    }
+
     // Made as a pseudo template for future types of messages.
     public static void sendMessage(int messageType, int[] values, int txCost) throws GameActionException {
         int[] message = new int[txLength];
@@ -72,8 +80,8 @@ public class Blockchain {
     public static void updateListsFromBC() throws GameActionException {
         LinkedList<int[]> messages = getTeamMessages();
         for(int[] msg: messages) {
-            if(msg[1] == selfID)
-                continue;
+            //if(msg[1] == selfID) -- was using this to filter out own messages, but could be useful
+                //continue;
             switch (msg[2]) {
                 case MSG_ROBOT_LOCATON:
                     parseRobotLoc(msg);
@@ -86,6 +94,9 @@ public class Blockchain {
                     break;
                 case MSG_RBT_BUILT:
                     updateRobotBuilt(msg);
+                case MSG_CHECK_IN:
+                    checkIn(msg);
+                    break;
                 default:
                     break;
             }
@@ -167,15 +178,19 @@ public class Blockchain {
 
     public static void updateRobotBuilt(int[] message) {
         MapLocation loc = new MapLocation(message[4], message[5]);
+        int round = rc.getRoundNum();
         switch (message[3]) {
             case UNT_MINER:
-                numMiners++;
+                if(!checkListForBot(miners, message[1]))
+                    miners.add(new Integer[]{message[1], message[3], message[4], message[5], round});
                 break;
             case UNT_LANDSCAPER:
-                numLandscapers++;
+                if(!checkListForBot(landscapers, message[1]))
+                    landscapers.add(new Integer[]{message[1], message[3], message[4], message[5], round});
                 break;
             case UNT_DDRONE:
-                numDrones++;
+                if(!checkListForBot(drones, message[1]))
+                    drones.add(new Integer[]{message[1], message[3], message[4], message[5], round});
                 break;
             case BLD_HQ:
                 HqLocation = loc;
@@ -206,6 +221,39 @@ public class Blockchain {
                 break;
             default:
                 break;
+        }
+    }
+
+    // Updates the last turn heard from bot and removes bots assumed to be destroyed
+    public static void checkIn(int[] message) {
+        switch(message[6]) {
+            case UNT_MINER:
+                checkIn(miners, message);
+                break;
+            case UNT_LANDSCAPER:
+                checkIn(landscapers, message);
+                break;
+            case UNT_DDRONE:
+                checkIn(drones, message);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void checkIn(LinkedList<Integer[]> lst, int[] message) {
+        int round = rc.getRoundNum();
+        boolean found = false;
+        for(Integer[] unt: lst) {
+            if(unt[0] == message[1]) {
+                found = true;
+                unt[unt.length - 1] = round;
+            }
+            else if(unt[unt.length - 1] < round - TURNS_TIL_DEAD)
+                lst.remove(unt);
+        }
+        if(!found) {
+            lst.add(new Integer[]{message[1], message[3], message[4], message[5], round});
         }
     }
 

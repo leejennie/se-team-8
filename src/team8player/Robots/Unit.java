@@ -59,10 +59,12 @@ public class Unit extends PlayerBot {
         return false;
     }
 
-    public void startOfTurn() throws GameActionException {}
-
     public void run() throws GameActionException {
+        currentLoc = rc.getLocation();
         Blockchain.updateListsFromBC();
+        if(lastCheckin < rc.getRoundNum() - 3) // check in every 3 turns
+            Blockchain.sendMessage(MSG_CHECK_IN,new int[]{selfPhase,
+                                currentLoc.x, currentLoc.y, robotToInt(rc.getType())}, 5);
         nearbyBots = rc.senseNearbyRobots();
 
         // the rest of this method is now covered by updateListsFromBC
@@ -73,7 +75,7 @@ public class Unit extends PlayerBot {
 
     static void endTurn() throws GameActionException {
 
-        // If currentGoal != null, move in that directio
+        // If currentGoal != null, move in that direction
         if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));
 
         // If nothing else to do, move in a random dir

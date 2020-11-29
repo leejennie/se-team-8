@@ -22,6 +22,10 @@ public strictfp class RobotPlayer {
         // and to get information on its current status.
         Globals.rc = rc;
         rType = rc.getType(); // Get the robot type and store it to reduce bytecode consumption with later calls
+        MapLocation loc = rc.getLocation();
+
+        // Send an update that this bot has been built
+        Blockchain.sendMessage(MSG_RBT_BUILT, new int[]{robotToInt(rType), loc.x, loc.y}, 10);
         // Create a robot with the Robot Controller
         switch (rType) {
             case MINER:
@@ -34,8 +38,6 @@ public strictfp class RobotPlayer {
                 rbt = new DeliveryDrone(rc);
                 break;
             case HQ:
-                MapLocation loc = rc.getLocation();
-                Blockchain.sendMessage(MSG_RBT_BUILT, new int[]{BLD_HQ, loc.x, loc.y}, 10);
                 rbt = new HQ(rc);
                 break;
             case REFINERY:

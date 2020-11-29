@@ -32,29 +32,6 @@ public abstract class PlayerBot {
         return false;
     }
 
-    public static void incrementBuiltType(RobotType type, MapLocation loc) {
-        switch (type) {
-            case MINER:
-                numMiners++;
-            case LANDSCAPER:
-                numLandscapers++;
-            case DELIVERY_DRONE:
-                numDrones++;
-            case HQ:
-                return;
-            case REFINERY:
-                refineries.add(loc);
-            case VAPORATOR:
-                vaporators.add(loc);
-            case DESIGN_SCHOOL:
-                designSchools.add(loc);
-            case FULFILLMENT_CENTER:
-                fulCenters.add(loc);
-            case NET_GUN:
-                netGuns.add(loc);
-        }
-    }
-
     /**
      * Attempts to build a given robot in a given direction.
      *
@@ -80,8 +57,6 @@ public abstract class PlayerBot {
         // try to build
         if (rc.isReady() && rc.canBuildRobot(type, dir)) {
             rc.buildRobot(type, dir);
-            Blockchain.sendMessage(MSG_RBT_BUILT, new int[]{robotToInt(type), loc.x, loc.y}, 10);
-            incrementBuiltType(type, loc);
             System.out.printf("I just built a %s!%n", type.toString());
             return true;
         }

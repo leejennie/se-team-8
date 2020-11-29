@@ -22,7 +22,7 @@ public class Landscaper extends Unit {
 
     @Override
     public void run() throws GameActionException {
-        super.startOfTurn();
+        super.run();
 
         int currDirt = rc.getDirtCarrying();
         if (currDirt == 0) {

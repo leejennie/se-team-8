@@ -24,17 +24,6 @@ public class Landscaper extends Unit {
     public void run() throws GameActionException {
         super.run();
 
-        switch(stratPhase) {
-            case STR_PHS_EXPAND:
-                break;
-            case STR_PHS_SEARCH:
-                break;
-            case STR_PHS_DESTROY:
-                break;
-            default:
-                break;
-        }
-
         int currDirt = rc.getDirtCarrying();
         if (currDirt == 0) {
             Direction dir = PlayerBot.randomDirection();
@@ -43,26 +32,37 @@ public class Landscaper extends Unit {
                 return;
             }
         }
-        else if (currDirt == 25) {
-            Direction dir = PlayerBot.randomDirection();
-            if (tryDepositDirt(dir)) {
-                //System.out.println("I deposited dirt in the " + dir + " direction.");
-                return;
-            }
+
+        switch(stratPhase) {
+            case STR_PHS_EXPAND:
+            case STR_PHS_SEARCH:
+                // build wall around HQ for either of first 2 phases
+                currentGoal = refineries.getFirst();
+                currDirection = currentLoc.directionTo(currentGoal);
+                for(Direction dir: Direction.allDirections()) {
+                    if(currentLoc.add(dir).distanceSquaredTo(currentGoal) < 3) {
+                        if(rc.canDepositDirt(dir))
+                            rc.depositDirt(dir);
+                        else
+                            tryMove();
+                    }
+                }
+                if(rc.canDigDirt(currDirection.opposite()))
+                    rc.digDirt(currDirection.opposite());
+                break;
+            case STR_PHS_DESTROY:
+                currentGoal = enemyHqLocation;
+                currDirection = currentLoc.directionTo(currentGoal);
+                if(currentLoc.add(currDirection) == enemyHqLocation && Globals.rc.canDepositDirt(currDirection)
+                    && currDirt > 0)
+                    rc.depositDirt(currDirection);
+                if(rc.canDigDirt(currDirection.opposite()))
+                    rc.digDirt(currDirection.opposite());
+                break;
+            default:
+                break;
         }
 
-        else {
-            for (Direction dir : Direction.allDirections())
-                if (tryDig(dir)) {
-                    //System.out.println("I dug in the " + dir + " direction.");
-                    return;
-                }
-            for (Direction dir : Direction.allDirections())
-                if (tryDepositDirt(dir)){
-                    //System.out.println("I deposited dirt in the " + dir + " direction.");
-                    return;
-                }
-        }
         endTurn();
     }
 

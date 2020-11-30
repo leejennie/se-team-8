@@ -17,6 +17,36 @@ public class HQ extends Building {
 
     @Override
     public void run() throws GameActionException {
+
+        // HQ is a singleton, so have it control strategy phase
+        switch(stratPhase) {
+            // If grown enough, switch to search phase
+            case STR_PHS_EXPAND:
+                if(refineries.size() == 2 && designSchools.size() == 1 && fulCenters.size() == 1) {
+                    stratPhase = STR_PHS_SEARCH;
+                    Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_SEARCH}, 20);
+                }
+                // create 5 miners for the hq, and 3 for each refinery after
+                if(miners.size() < ((refineries.size() - 1) * 3) + 5) {
+                    tryBuild(RobotType.MINER);
+                }
+                break;
+            case STR_PHS_SEARCH:
+                // If we know enemy HQ location and have the attack force needed, switch to destroy phase
+                if(enemyHqLocation != null && drones.size() > 2 && landscapers.size() > 2) {
+                    stratPhase = STR_PHS_DESTROY;
+                    Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_DESTROY}, 20);
+                }
+                break;
+            case STR_PHS_DESTROY:
+                // If we lost our attack force, reset to expand phase
+                if(drones.size() < 2 || landscapers.size() < 2) {
+                    stratPhase = STR_PHS_EXPAND;
+                    Blockchain.sendMessage(MSG_PHS_CHANGE, new int[] {STR_PHS_EXPAND}, 20);
+                }
+                break;
+        }
+
         super.run();
         // make sure refineries isn't empty to avoid dividing by 0
         if(refineries.size() == 0) {
@@ -31,10 +61,5 @@ public class HQ extends Building {
                     rc.shootUnit(rbt.ID);
         }
 
-        //Taken from https://www.youtube.com/watch?v=B0dYT3KZd9Y lecture video. Liked the way they produced miners and
-        // thought it was helpful to winning the game because having more miners can produce more "robots"
-        if(numMiners < refineries.size() * 5) { // limit the number of miners to 3 for every refinery (HQ included)
-            tryBuild(RobotType.MINER);
-        }
     }
 }

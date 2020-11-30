@@ -21,159 +21,45 @@ public class Landscaper extends Unit {
     @Override
     public void run() throws GameActionException {
         super.run();
-        currentGoal=HqLocation;
+
+        switch(stratPhase) {
+            case STR_PHS_EXPAND:
+                break;
+            case STR_PHS_SEARCH:
+                break;
+            case STR_PHS_DESTROY:
+                break;
+            default:
+                break;
+        }
+
         int currDirt = rc.getDirtCarrying();
         if (currDirt == 0) {
             Direction dir = PlayerBot.randomDirection();
             if (tryDig(dir)) {
-                System.out.println("I dug in the " + dir + " direction.");
-                tryMove(rc.getLocation().directionTo(currentGoal));
+                //System.out.println("I dug in the " + dir + " direction.");
                 return;
             }
-
         }
         else if (currDirt == 25) {
-            Direction dir;
-            if((rc.getLocation().x==currentGoal.x+1)&&(rc.getLocation().y==currentGoal.y)) {
-                dir = Direction.SOUTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
+            Direction dir = PlayerBot.randomDirection();
+            if (tryDepositDirt(dir)) {
+                //System.out.println("I deposited dirt in the " + dir + " direction.");
+                return;
             }
-            else if((rc.getLocation().x==currentGoal.x+1)&&(rc.getLocation().y==currentGoal.y-1)) {
-                dir = Direction.WEST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x)&&(rc.getLocation().y==currentGoal.y-1)) {
-                dir = Direction.WEST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x-1)&&(rc.getLocation().y==currentGoal.y-1)) {
-                dir = Direction.NORTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x-1)&&(rc.getLocation().y==currentGoal.y)) {
-                dir = Direction.NORTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x-1)&&(rc.getLocation().y==currentGoal.y+1)) {
-                dir = Direction.EAST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x)&&(rc.getLocation().y==currentGoal.y+1)) {
-                dir = Direction.EAST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x+1)&&(rc.getLocation().y==currentGoal.y+1)) {
-                dir = Direction.SOUTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-
-            tryMove(rc.getLocation().directionTo(currentGoal));
         }
 
         else {
             for (Direction dir : Direction.allDirections())
                 if (tryDig(dir)) {
-                    System.out.println("I dug in the " + dir + " direction.");
-                    tryMove(rc.getLocation().directionTo(currentGoal));
+                    //System.out.println("I dug in the " + dir + " direction.");
                     return;
                 }
-            Direction dir;
-            if((rc.getLocation().x==currentGoal.x+1)&&(rc.getLocation().y==currentGoal.y)) {
-                dir = Direction.SOUTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
+            for (Direction dir : Direction.allDirections())
+                if (tryDepositDirt(dir)){
+                    //System.out.println("I deposited dirt in the " + dir + " direction.");
                     return;
                 }
-            }
-            else if((rc.getLocation().x==currentGoal.x+1)&&(rc.getLocation().y==currentGoal.y-1)) {
-                dir = Direction.WEST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x)&&(rc.getLocation().y==currentGoal.y-1)) {
-                dir = Direction.WEST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x-1)&&(rc.getLocation().y==currentGoal.y-1)) {
-                dir = Direction.NORTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x-1)&&(rc.getLocation().y==currentGoal.y)) {
-                dir = Direction.NORTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x-1)&&(rc.getLocation().y==currentGoal.y+1)) {
-                dir = Direction.EAST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x)&&(rc.getLocation().y==currentGoal.y+1)) {
-                dir = Direction.EAST;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
-            else if((rc.getLocation().x==currentGoal.x+1)&&(rc.getLocation().y==currentGoal.y+1)) {
-                dir = Direction.SOUTH;
-                if (tryDepositDirt(dir)) {
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    tryMove(dir);
-                    return;
-                }
-            }
         }
         endTurn();
     }

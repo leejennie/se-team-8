@@ -8,9 +8,12 @@ import java.util.LinkedList;
 public class Globals {
 
     // Global Variables
+    public static int stratPhase = 0;
+    public static int selfPhase = 0;
     public static MapLocation HqLocation;
     public static MapLocation enemyHqLocation;
     public static MapLocation currentGoal;
+    public static MapLocation currentLoc;
     public static LinkedList<MapLocation> soupLocs = new LinkedList<>();
     public static LinkedList<MapLocation> usedLocs = new LinkedList<>();
     public static LinkedList<MapLocation> refineries = new LinkedList<>();
@@ -22,10 +25,10 @@ public class Globals {
     public static int dirTurnsLeft = 0;
     public static RobotInfo[] nearbyBots;
     public static int turnCount;
-    public static int numMiners = 0;
-    public static int numLandscapers = 0;
-    public static int numDrones = 0;
-    public static int lastAction = -1; // so we can know when a bot is doing something different on their current turn
+    public static LinkedList<Integer[]> miners;
+    public static LinkedList<Integer[]> landscapers;
+    public static LinkedList<Integer[]> drones;
+    public static int lastCheckin = -1; // to track last time checked in
     public static RobotController rc;
     public static int txLength = 7; //added because trying to use the provided one was causing issues
     public static int lastTurnUpdatedFromBC = 1;
@@ -40,12 +43,19 @@ public class Globals {
     /*
     // Declaring global constants and int IDs for transactions to make code more readable
     */
+
+    // Strategy phase IDs
+    public static final int STR_PHS_EXPAND      = 0;
+    public static final int STR_PHS_SEARCH      = 1;
+    public static final int STR_PHS_DESTROY     = 2;
+
     // Message type IDs
     public static final int MSG_ROBOT_LOCATON   = 0;
     public static final int MSG_SOUP_LOCATION   = 1;
     public static final int MSG_COW_LOCATION    = 2;
     public static final int MSG_RBT_BUILT       = 3;
-    public static final int MSG_SOUP_USED       = 4;
+    public static final int MSG_CHECK_IN        = 4;
+    public static final int MSG_PHS_CHANGE      = 5;
 
     // Hostility
     public static final int HOS_ALLY            = 0;
@@ -67,6 +77,8 @@ public class Globals {
 
     // Other various globals
     public static final int MAX_TURNS_DIR       = 30;
+    public static final int TURNS_TIL_DEAD      = 6;
+    public static final int MINER_RADIUS        = 5;
 
 
 

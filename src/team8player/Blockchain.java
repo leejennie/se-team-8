@@ -39,42 +39,21 @@ public class Blockchain {
         return getMessages(-1, filter);
     }
 
-    // Message senders  *** removing hostility since this will only be used to sent the location of enemies
-    /*public static void sendRobotLoc(MapLocation loc, int robotType, int txCost) throws GameActionException {
-
-        int[] message = new int[txLength];
-        message[0] = teamCode;
-        message[1] = selfID;
-        message[2] = MSG_ROBOT_LOCATON;
-        message[3] = robotType;
-        message[4] = loc.x;
-        message[5] = loc.y;
-        message[6] = -1;
-        System.out.printf("I just sent the location of a %s at [%d, %d] to the blockchain for %d%n",
-                Globals.intToRobot(robotType),
-                loc.x,
-                loc.y,
-                txCost);
-        if(rc.canSubmitTransaction(message, txCost)) {
-            rc.submitTransaction(message, txCost);
+    public static boolean checkListForLoc(LinkedList<MapLocation> locs, MapLocation loc) {
+        for(MapLocation l: locs) {
+            if(l.equals(loc))
+                return true;
         }
-    }*/
+        return false;
+    }
 
-    /*public static void sendSoupLoc(MapLocation loc, int txCost) throws GameActionException {
-        int[] message = new int[txLength];
-        message[0] = teamCode;
-        message[1] = selfID;
-        message[2] = MSG_SOUP_LOCATION;
-        message[3] = loc.x;
-        message[4] = loc.y;
-        if(rc.canSubmitTransaction(message, txCost)) {
-            rc.submitTransaction(message, txCost);
-            System.out.printf("I sent the location of soup at [%d, %d] to the blockchain for %d!%n",
-                    loc.x,
-                    loc.y,
-                    txCost);
+    public static boolean checkListForBot(LinkedList<Integer[]> bots, int botID) {
+        for(Integer[] bot: bots) {
+            if (botID == bot[0])
+                return true;
         }
-    }*/
+        return false;
+    }
 
     // Made as a pseudo template for future types of messages.
     public static void sendMessage(int messageType, int[] values, int txCost) throws GameActionException {
@@ -101,8 +80,8 @@ public class Blockchain {
     public static void updateListsFromBC() throws GameActionException {
         LinkedList<int[]> messages = getTeamMessages();
         for(int[] msg: messages) {
-            if(msg[1] == selfID)
-                continue;
+            //if(msg[1] == selfID) -- was using this to filter out own messages, but could be useful
+                //continue;
             switch (msg[2]) {
                 case MSG_ROBOT_LOCATON:
                     parseRobotLoc(msg);
@@ -115,6 +94,11 @@ public class Blockchain {
                     break;
                 case MSG_RBT_BUILT:
                     updateRobotBuilt(msg);
+                case MSG_CHECK_IN:
+                    checkIn(msg);
+                    break;
+                case MSG_PHS_CHANGE:
+                    stratPhase = msg[3];
                 default:
                     break;
             }
@@ -196,45 +180,82 @@ public class Blockchain {
 
     public static void updateRobotBuilt(int[] message) {
         MapLocation loc = new MapLocation(message[4], message[5]);
+        int round = rc.getRoundNum();
         switch (message[3]) {
             case UNT_MINER:
-                numMiners++;
+                if(!checkListForBot(miners, message[1]))
+                    miners.add(new Integer[]{message[1], message[3], message[4], message[5], round});
                 break;
             case UNT_LANDSCAPER:
-                numLandscapers++;
+                if(!checkListForBot(landscapers, message[1]))
+                    landscapers.add(new Integer[]{message[1], message[3], message[4], message[5], round});
                 break;
             case UNT_DDRONE:
-                numDrones++;
+                if(!checkListForBot(drones, message[1]))
+                    drones.add(new Integer[]{message[1], message[3], message[4], message[5], round});
                 break;
             case BLD_HQ:
                 HqLocation = loc;
-                if(!refineries.contains(loc))
+                if(!checkListForLoc(refineries, loc))
                     refineries.add(loc);
                 break;
             case BLD_REFINERY:
-                if(!refineries.contains(loc))
+                if(!checkListForLoc(refineries, loc))
                     refineries.add(loc);
                 break;
             case BLD_VAPORATOR:
-                if(!vaporators.contains(loc))
+                if(!checkListForLoc(vaporators, loc))
                     vaporators.add(loc);
                 break;
             case BLD_DESIGNSCH:
-                if(!designSchools.contains(loc))
+                if(!checkListForLoc(designSchools, loc))
                     designSchools.add(loc);
                 break;
             case BLD_FLMTCNTR:
-                if(!fulCenters.contains(loc))
+                if(!checkListForLoc(fulCenters, loc))
                     fulCenters.add(loc);
                 break;
             case BLD_NETGUN:
-                if(!netGuns.contains(loc))
+                if(!checkListForLoc(netGuns, loc))
                     netGuns.add(loc);
                 break;
             case UNT_COW:
                 break;
             default:
                 break;
+        }
+    }
+
+    // Updates the last turn heard from bot and removes bots assumed to be destroyed
+    public static void checkIn(int[] message) {
+        switch(message[6]) {
+            case UNT_MINER:
+                checkIn(miners, message);
+                break;
+            case UNT_LANDSCAPER:
+                checkIn(landscapers, message);
+                break;
+            case UNT_DDRONE:
+                checkIn(drones, message);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void checkIn(LinkedList<Integer[]> lst, int[] message) {
+        int round = rc.getRoundNum();
+        boolean found = false;
+        for(Integer[] unt: lst) {
+            if(unt[0] == message[1]) {
+                found = true;
+                unt[unt.length - 1] = round;
+            }
+            else if(unt[unt.length - 1] < round - TURNS_TIL_DEAD)
+                lst.remove(unt);
+        }
+        if(!found) {
+            lst.add(new Integer[]{message[1], message[3], message[4], message[5], round});
         }
     }
 

@@ -21,8 +21,17 @@ public class DesignSchool extends Building {
     public void run() throws GameActionException {
         super.run();
 
-        if(numLandscapers <= numDrones && (enemyHqLocation != null || numLandscapers == 0)) { // just an arbitrary limit until we decide on a strategy for these
-            tryBuild(RobotType.LANDSCAPER);
+        switch(stratPhase) {
+            case STR_PHS_EXPAND:
+                if(landscapers.size() < 3)
+                    tryBuild(RobotType.LANDSCAPER);
+                break;
+            case STR_PHS_SEARCH:
+                break;
+            case STR_PHS_DESTROY:
+                break;
+            default:
+                break;
         }
     }
 }

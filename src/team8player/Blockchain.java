@@ -99,6 +99,27 @@ public class Blockchain {
                     break;
                 case MSG_PHS_CHANGE:
                     stratPhase = msg[3];
+                    break;
+                case MSG_PICK_UP:
+                    // check if this bot is a drone and if it is the closest available to the pickup request
+                    MapLocation request = new MapLocation(msg[4], msg[5]);
+                    int distance = rc.getLocation().distanceSquaredTo(request);
+                    boolean found = false;
+                    if(rc.getType() == RobotType.DELIVERY_DRONE) {
+                        for (Integer[] dr : drones) {
+                            if (request.distanceSquaredTo(new MapLocation(dr[2], dr[3])) < distance
+                                && dr[1] == DD_PHS_DEF) {
+                                found = true;
+                                break;
+                            }
+
+                        }
+                        if(found) {
+                            break;
+                        }
+                        currentGoal = request;
+                        selfPhase = DD_PHS_PKUP_A;
+                    }
                 default:
                     break;
             }

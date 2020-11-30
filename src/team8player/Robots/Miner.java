@@ -13,6 +13,8 @@ public class Miner extends Unit {
     static final RobotType[] spawnList = {RobotType.REFINERY, RobotType.FULFILLMENT_CENTER, RobotType.DESIGN_SCHOOL,
             RobotType.VAPORATOR, RobotType.NET_GUN};
 
+    boolean waiting = false;
+
     /**
      * Robot constructor
      * @return a Miner
@@ -173,6 +175,8 @@ public class Miner extends Unit {
             for(Direction dir: Direction.allDirections()) {
                 tryDeposit(dir);
             }
+
+            // if
             int min = 9999;
             for(MapLocation loc: refineries) {
                 int tmp = rc.getLocation().distanceSquaredTo(loc);

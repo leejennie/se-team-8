@@ -2,6 +2,7 @@ package team8player;
 
 import battlecode.common.*;
 import com.sun.tools.javac.code.Type;
+import sun.awt.image.ImageWatched;
 
 import java.util.LinkedList;
 
@@ -14,6 +15,7 @@ public class Globals {
     public static MapLocation enemyHqLocation;
     public static MapLocation currentGoal;
     public static MapLocation currentLoc;
+    public static MapLocation lastSeenWater;
     public static LinkedList<MapLocation> soupLocs = new LinkedList<>();
     public static LinkedList<MapLocation> usedLocs = new LinkedList<>();
     public static LinkedList<MapLocation> refineries = new LinkedList<>();
@@ -56,6 +58,7 @@ public class Globals {
     public static final int MSG_RBT_BUILT       = 3;
     public static final int MSG_CHECK_IN        = 4;
     public static final int MSG_PHS_CHANGE      = 5;
+    public static final int MSG_PICK_UP         = 6;
 
     // Hostility
     public static final int HOS_ALLY            = 0;
@@ -75,10 +78,20 @@ public class Globals {
     // cows
     public static final int UNT_COW             = 9;
 
+    // Delivery drone phases
+    public static final int DD_PHS_DEF          = 0;
+    public static final int DD_PHS_PKUP_A       = 1;
+    public static final int DD_PHS_PKUP_E       = 2;
+    public static final int DD_PHS_PKUP_C       = 3;
+    public static final int DD_PHS_DRP          = 4;
+    public static final int DD_PHS_KILL         = 5;
+    public static final int DD_PHS_WATER        = 6;
+
     // Other various globals
     public static final int MAX_TURNS_DIR       = 30;
     public static final int TURNS_TIL_DEAD      = 6;
     public static final int MINER_RADIUS        = 5;
+    public static final int DROP_OFF_RADIUS     = 5;
 
 
 

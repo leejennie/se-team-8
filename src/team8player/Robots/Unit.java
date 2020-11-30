@@ -3,10 +3,6 @@ package team8player.Robots;
 import battlecode.common.*;
 import team8player.Blockchain;
 import static team8player.Globals.*;
-import team8player.*;
-
-import java.util.LinkedList;
-
 
 
 public class Unit extends PlayerBot {
@@ -61,6 +57,9 @@ public class Unit extends PlayerBot {
 
     public void run() throws GameActionException {
         currentLoc = rc.getLocation();
+        if(currentGoal != null)
+            currDirection = currentLoc.directionTo(currentGoal);
+
         Blockchain.updateListsFromBC();
         if(lastCheckin < rc.getRoundNum() - 3) // check in every 3 turns
             Blockchain.sendMessage(MSG_CHECK_IN,new int[]{selfPhase,
@@ -76,7 +75,8 @@ public class Unit extends PlayerBot {
     static void endTurn() throws GameActionException {
 
         // If currentGoal != null, move in that direction
-        if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));
+        while(rc.isReady())
+            if(currentGoal != null) tryMove(currDirection);
 
         // If nothing else to do, move in a random dir
         if(!skipMovement)

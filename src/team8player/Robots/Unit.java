@@ -71,7 +71,7 @@ public class Unit extends PlayerBot {
 
     public static void endTurn() throws GameActionException {
 
-        // If currentGoal != null, move in that directio
+        // If currentGoal != null, move in that direction
         if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));
 
         // If nothing else to do, move in a random dir

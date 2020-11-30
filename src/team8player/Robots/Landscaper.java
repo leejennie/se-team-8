@@ -4,6 +4,8 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import team8player.Blockchain;
+
 import static team8player.Globals.*;
 
 import java.util.LinkedList;
@@ -28,6 +30,7 @@ public class Landscaper extends Unit {
             if (tryDig(dir)) {
                 System.out.println("I dug in the " + dir + " direction.");
                 tryMove(rc.getLocation().directionTo(currentGoal));
+
                 return;
             }
 
@@ -38,6 +41,7 @@ public class Landscaper extends Unit {
                 dir = Direction.SOUTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -46,6 +50,7 @@ public class Landscaper extends Unit {
                 dir = Direction.WEST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -54,6 +59,7 @@ public class Landscaper extends Unit {
                 dir = Direction.WEST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -62,6 +68,7 @@ public class Landscaper extends Unit {
                 dir = Direction.NORTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -70,6 +77,7 @@ public class Landscaper extends Unit {
                 dir = Direction.NORTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -78,6 +86,7 @@ public class Landscaper extends Unit {
                 dir = Direction.EAST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -86,6 +95,7 @@ public class Landscaper extends Unit {
                 dir = Direction.EAST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -94,6 +104,7 @@ public class Landscaper extends Unit {
                 dir = Direction.SOUTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -114,6 +125,7 @@ public class Landscaper extends Unit {
                 dir = Direction.SOUTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -122,6 +134,7 @@ public class Landscaper extends Unit {
                 dir = Direction.WEST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -130,6 +143,7 @@ public class Landscaper extends Unit {
                 dir = Direction.WEST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -138,6 +152,7 @@ public class Landscaper extends Unit {
                 dir = Direction.NORTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -146,6 +161,7 @@ public class Landscaper extends Unit {
                 dir = Direction.NORTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -154,6 +170,7 @@ public class Landscaper extends Unit {
                 dir = Direction.EAST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -162,6 +179,7 @@ public class Landscaper extends Unit {
                 dir = Direction.EAST;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }
@@ -170,6 +188,7 @@ public class Landscaper extends Unit {
                 dir = Direction.SOUTH;
                 if (tryDepositDirt(dir)) {
                     System.out.println("I deposited dirt in the " + dir + " direction.");
+                    usedLocs.add(rc.getLocation());
                     tryMove(dir);
                     return;
                 }

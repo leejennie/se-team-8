@@ -4,6 +4,8 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import team8player.Globals;
+
 import static team8player.Globals.*;
 
 import java.util.LinkedList;
@@ -14,7 +16,8 @@ public class Landscaper extends Unit {
      * Robot constructor
      * @return a random RobotType
      */
-    public Landscaper() {
+    public Landscaper(RobotController rc) {
+        super(rc);
     }
 
     @Override
@@ -25,30 +28,41 @@ public class Landscaper extends Unit {
         if (currDirt == 0) {
             Direction dir = PlayerBot.randomDirection();
             if (tryDig(dir)) {
-                System.out.println("I dug in the " + dir + " direction.");
-                return;
-            }
-        }
-        else if (currDirt == 25) {
-            Direction dir = PlayerBot.randomDirection();
-            if (tryDepositDirt(dir)) {
-                System.out.println("I deposited dirt in the " + dir + " direction.");
+                //System.out.println("I dug in the " + dir + " direction.");
                 return;
             }
         }
 
-        else {
-            for (Direction dir : Direction.allDirections())
-                if (tryDig(dir)) {
-                    System.out.println("I dug in the " + dir + " direction.");
-                    return;
+        switch(stratPhase) {
+            case STR_PHS_EXPAND:
+            case STR_PHS_SEARCH:
+                // build wall around HQ for either of first 2 phases
+                currentGoal = refineries.getFirst();
+                currDirection = currentLoc.directionTo(currentGoal);
+                for(Direction dir: Direction.allDirections()) {
+                    if(currentLoc.add(dir).distanceSquaredTo(currentGoal) < 3) {
+                        if(rc.canDepositDirt(dir))
+                            rc.depositDirt(dir);
+                        else
+                            tryMove();
+                    }
                 }
-            for (Direction dir : Direction.allDirections())
-                if (tryDepositDirt(dir)){
-                    System.out.println("I deposited dirt in the " + dir + " direction.");
-                    return;
-                }
+                if(rc.canDigDirt(currDirection.opposite()))
+                    rc.digDirt(currDirection.opposite());
+                break;
+            case STR_PHS_DESTROY:
+                currentGoal = enemyHqLocation;
+                currDirection = currentLoc.directionTo(currentGoal);
+                if(currentLoc.add(currDirection) == enemyHqLocation && Globals.rc.canDepositDirt(currDirection)
+                    && currDirt > 0)
+                    rc.depositDirt(currDirection);
+                if(rc.canDigDirt(currDirection.opposite()))
+                    rc.digDirt(currDirection.opposite());
+                break;
+            default:
+                break;
         }
+
         endTurn();
     }
 

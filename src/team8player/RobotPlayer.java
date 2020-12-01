@@ -21,49 +21,52 @@ public strictfp class RobotPlayer {
         // This is the RobotController object. You use it to perform actions from this robot,
         // and to get information on its current status.
         Globals.rc = rc;
-        rType = rc.getType(); // Get the robot type and store it to reduce bytecode consumprion with later calls
+        rType = rc.getType(); // Get the robot type and store it to reduce bytecode consumption with later calls
+        MapLocation loc = rc.getLocation();
+
+        // Send an update that this bot has been built
+        Blockchain.sendMessage(MSG_RBT_BUILT, new int[]{robotToInt(rType), loc.x, loc.y}, 10);
         // Create a robot with the Robot Controller
         switch (rType) {
             case MINER:
-                rbt = new Miner();
+                rbt = new Miner(rc);
                 break;
             case LANDSCAPER:
-                rbt = new Landscaper();
+                rbt = new Landscaper(rc);
                 break;
             case DELIVERY_DRONE:
-                rbt = new DeliveryDrone();
+                rbt = new DeliveryDrone(rc);
                 break;
             case HQ:
-                MapLocation loc = rc.getLocation();
-                Blockchain.sendStatusUpdate(UPD_RBT_BUILT, new int[]{BLD_HQ, loc.x, loc.y}, 10);
-                rbt = new HQ();
+                rbt = new HQ(rc);
                 break;
             case REFINERY:
-                rbt = new Refinery();
+                rbt = new Refinery(rc);
                 break;
             case VAPORATOR:
-                rbt = new Vaporator();
+                rbt = new Vaporator(rc);
                 break;
             case DESIGN_SCHOOL:
-                rbt = new DesignSchool();
+                rbt = new DesignSchool(rc);
                 break;
             case FULFILLMENT_CENTER:
-                rbt = new FulfillmentCenter();
+                rbt = new FulfillmentCenter(rc);
                 break;
             case NET_GUN:
-                rbt = new NetGun();
+                rbt = new NetGun(rc);
                 break;
         }
 
         turnCount = 0;
 
-        //System.out.println("I'm a " + rType + " and I just got created!");
+        System.out.println("I'm a " + rType + " and I just got created!");
         while (true) {
             turnCount += 1;
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
                 // Here, we've separated the controls into a different method for each RobotType.
                 // You can add the missing ones or rewrite this into your own control structure.
+
                 //System.out.println("I'm a " + rType + "! Location " + rc.getLocation());
 
                 rbt.run();

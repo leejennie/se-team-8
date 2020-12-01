@@ -1,19 +1,16 @@
 package team8player.Robots;
 
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
-import team8player.Blockchain;
+import team8player.*;
+import battlecode.common.*;
 
-import static team8player.Globals.*;
-
-public class Building implements PlayerBot {
+public class Building extends PlayerBot {
 
     /**
      * Robot constructor
      * @return a Building
      */
-    public Building() {
-
+    public Building(RobotController rc) {
+        super(rc);
     }
 
     @Override

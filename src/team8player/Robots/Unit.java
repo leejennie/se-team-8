@@ -4,19 +4,17 @@ import battlecode.common.*;
 import team8player.Blockchain;
 import static team8player.Globals.*;
 
-import java.util.LinkedList;
 
+public class Unit extends PlayerBot {
 
-
-public abstract class Unit implements PlayerBot {
-
-    public Unit() {
+    public Unit(RobotController rc) {
+        super(rc);
     }
 
     static void findHQ() throws GameActionException {
         for (RobotInfo robot : nearbyBots) {
             if(robot.type == RobotType.HQ && robot.team != rc.getTeam()) {
-                Blockchain.sendRobotLoc(rc.getLocation(), BLD_HQ, 10);
+                Blockchain.sendMessage(MSG_ROBOT_LOCATON, new int[]{BLD_HQ, robot.location.x, robot.location.y}, 10);
             }
         }
     }
@@ -47,19 +45,25 @@ public abstract class Unit implements PlayerBot {
      */
     static boolean tryMove(Direction dir) throws GameActionException {
         MapLocation tmp = rc.getLocation().add(dir);
-        System.out.printf("Trying to move to [%d] [%d]%n", tmp.x, tmp.y);
+        //System.out.printf("Trying to move to [%d] [%d]%n", tmp.x, tmp.y);
         if(rc.canSenseLocation(rc.getLocation().add(dir))) {
             if (rc.isReady() && rc.canMove(dir)) {
                 rc.move(dir);
                 return true;
-
             }
         }
         return false;
     }
 
     public void run() throws GameActionException {
+        currentLoc = rc.getLocation();
+        if(currentGoal != null)
+            currDirection = currentLoc.directionTo(currentGoal);
+
         Blockchain.updateListsFromBC();
+        if(lastCheckin < rc.getRoundNum() - 3) // check in every 3 turns
+            Blockchain.sendMessage(MSG_CHECK_IN,new int[]{selfPhase,
+                                currentLoc.x, currentLoc.y, robotToInt(rc.getType())}, 5);
         nearbyBots = rc.senseNearbyRobots();
 
         // the rest of this method is now covered by updateListsFromBC
@@ -70,10 +74,12 @@ public abstract class Unit implements PlayerBot {
 
     static void endTurn() throws GameActionException {
 
-        // If currentGoal != null, move in that directio
-        if(currentGoal != null) tryMove(rc.getLocation().directionTo(currentGoal));
+        // If currentGoal != null, move in that direction
+        while(rc.isReady())
+            if(currentGoal != null) tryMove(currDirection);
 
         // If nothing else to do, move in a random dir
-        tryMove();
+        if(!skipMovement)
+            tryMove();
     }
 }
